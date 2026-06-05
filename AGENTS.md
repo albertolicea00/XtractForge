@@ -80,20 +80,18 @@ const progressRegex = /\[download\]\s+([\d.]+)% of\s+(?:~\s*)?([\d.]+\w+) at\s+(
 
 ---
 
-## 🚀 Development Workflow & Makefile
+## 🚀 Development Workflow & Scripts
 
-A `Makefile` in the root folder provides quick shortcuts:
+Package scripts are defined in `package.json` and are executed via `pnpm`:
 
-- **Install**: `make install` (Installs dependencies declared in `package.json`).
-- **Dev mode**: `make dev` (Starts Vite dev server in the background and opens the Electron window with HMR).
-- **Build**: `make build` (Generates production-ready static assets in `dist/`).
+- **Install**: `pnpm install` (Installs dependencies).
+- **Dev mode**: `pnpm dev` (Starts Vite dev server and opens the Electron window with HMR).
+- **Build**: `pnpm build` (Generates production-ready static assets in `dist/`).
 - **Packaging**:
-  - `make package-mac`
-  - `make package-win`
-  - `make package-linux`
-  - `make package-all`
-- **Clean**: `make clean` (Clears build directories and `node_modules` for a clean install).
-- **Git Commit**: `make git-commit` (Stages all files and performs initial git commit).
+  - `pnpm package:mac`
+  - `pnpm package:win`
+  - `pnpm package:linux`
+  - `pnpm package:all`
 
 ---
 

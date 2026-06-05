@@ -17,8 +17,9 @@ A premium, modern, cross-platform desktop graphical user interface (GUI) for the
 Ensure you have the following components installed on your machine:
 
 1. [Node.js](https://nodejs.org/) (Version 16 or newer)
-2. [yt-dlp](https://github.com/yt-dlp/yt-dlp)
-3. [ffmpeg](https://ffmpeg.org/) (required to merge high-quality audio and video formats)
+2. [pnpm](https://pnpm.io/)
+3. [yt-dlp](https://github.com/yt-dlp/yt-dlp)
+4. [ffmpeg](https://ffmpeg.org/) (required to merge high-quality audio and video formats)
 
 ## Getting Started
 
@@ -27,7 +28,7 @@ Ensure you have the following components installed on your machine:
 From the project root directory, run:
 
 ```bash
-npm install
+pnpm install
 ```
 
 ### 2. Run in Development Mode
@@ -35,7 +36,7 @@ npm install
 To start the Vite development server with Hot Module Replacement (HMR) and open the Electron wrapper concurrently:
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 ### 3. Build & Package
@@ -44,17 +45,17 @@ To compile the React bundle and package the application into a standalone deskto
 
 #### macOS:
 ```bash
-npm run package:mac
+pnpm package:mac
 ```
 
 #### Windows:
 ```bash
-npm run package:win
+pnpm package:win
 ```
 
 #### Linux:
 ```bash
-npm run package:linux
+pnpm package:linux
 ```
 
 All generated distribution packages are saved in the `dist-package/` directory.
