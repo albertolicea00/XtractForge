@@ -113,13 +113,37 @@ Status: `[ ]` todo · `[~]` wip · `[x]` done · `[!]` blocker
 
 - [ ] Add test script to `package.json` (`vitest` or `jest`)
 - [ ] ESLint config (currently none)
-- [ ] GitHub Actions CI: lint + build on PR
-- [ ] `electron-builder` code signing for macOS (notarization)
-- [ ] Auto-updater (`electron-updater`) — check GitHub releases
 - [ ] `package.json` description update (still says "yt-dlp GUI")
-- [ ] `package.json` author field
+- [ ] `package.json` author field (`albertolicea00`)
 - [ ] Move inline styles in App.jsx to CSS classes (currently ~80% inline)
 - [ ] Error boundary component in React (uncaught render errors crash whole UI)
+
+### 🚀 GitHub Actions — CI/CD & Releases
+
+- [ ] **`.github/workflows/ci.yml`** — runs on every PR:
+  - Checkout, setup Node 20 + pnpm
+  - `pnpm install --frozen-lockfile`
+  - `pnpm build` (Vite bundle, no Electron packaging)
+  - Fail PR if build errors
+
+- [ ] **`.github/workflows/release.yml`** — runs on `push tag v*.*.*`:
+  - Matrix: `ubuntu-latest`, `windows-latest`, `macos-latest`
+  - Checkout + setup Node 20 + pnpm
+  - `pnpm install --frozen-lockfile`
+  - `pnpm build` (Vite)
+  - macOS: `pnpm package:mac` → upload `dist-package/*.dmg` + `dist-package/*.zip`
+  - Windows: `pnpm package:win` → upload `dist-package/*.exe` + `dist-package/*.zip`
+  - Linux: `pnpm package:linux` → upload `dist-package/*.AppImage` + `dist-package/*.deb`
+  - Create GitHub Release from tag, attach all artifacts
+  - Secrets needed: `APPLE_ID`, `APPLE_APP_SPECIFIC_PASSWORD`, `APPLE_TEAM_ID` (for macOS notarization), `GH_TOKEN`
+
+- [ ] **macOS code signing** — `electron-builder` needs `CSC_LINK` (p12 cert base64) + `CSC_KEY_PASSWORD` in repo secrets
+- [ ] **macOS notarization** — add `afterSign` hook or `notarize` package; requires Apple Developer account
+- [ ] **Windows code signing** — `WIN_CSC_LINK` + `WIN_CSC_KEY_PASSWORD` in repo secrets (optional but kills SmartScreen warning)
+- [ ] **Auto-updater** — add `electron-updater`, configure `publish` in `electron-builder` config pointing to GitHub releases
+- [ ] **Homebrew cask** — after first release, submit PR to `homebrew/homebrew-cask` or maintain personal tap `albertolicea00/homebrew-xtractforge`
+- [ ] **winget manifest** — submit to `microsoft/winget-pkgs` after first release
+- [ ] **Snap / AUR** — `snapcraft.yaml` for Snap Store; `PKGBUILD` for AUR submission
 
 ---
 
@@ -127,6 +151,11 @@ Status: `[ ]` todo · `[~]` wip · `[x]` done · `[!]` blocker
 
 - [ ] Plugin authoring guide (separate `docs/PLUGIN_GUIDE.md`) with full type signatures
 - [ ] Changelog (`CHANGELOG.md`)
-- [ ] Contributing guide (`CONTRIBUTING.md`)
+- [x] Contributing guide (`CONTRIBUTING.md`)
+- [x] Code of Conduct (`CODE_OF_CONDUCT.md`)
+- [x] Security policy (`SECURITY.md`)
+- [x] EULA (`EULA.md`)
+- [x] Issue templates (bug, feature, plugin submission)
+- [x] PR template
 - [ ] Screenshot / GIF in README showing each tab
 - [ ] Document `<userData>` path per OS (macOS: `~/Library/Application Support/XtractForge`, Windows: `%APPDATA%\XtractForge`, Linux: `~/.config/XtractForge`)

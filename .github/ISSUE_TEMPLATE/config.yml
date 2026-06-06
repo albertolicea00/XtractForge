@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: Security vulnerability
-    url: https://github.com/YOUR_ORG/XtractForge/security/advisories/new
+    url: https://github.com/albertolicea00/XtractForge/security/advisories/new
     about: Report a security vulnerability privately via GitHub Security Advisories
   - name: Plugin authoring guide
-    url: https://github.com/YOUR_ORG/XtractForge/blob/main/ADDONS.md
+    url: https://github.com/albertolicea00/XtractForge/blob/main/ADDONS.md
     about: Read the plugin API docs before opening a plugin submission

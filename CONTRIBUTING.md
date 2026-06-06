@@ -39,7 +39,7 @@ Thanks for your interest in contributing. This guide covers everything you need 
 ### Install and run
 
 ```bash
-git clone https://github.com/YOUR_ORG/XtractForge.git
+git clone https://github.com/albertolicea00/XtractForge.git
 cd XtractForge
 pnpm install
 pnpm dev
