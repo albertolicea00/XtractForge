@@ -1,135 +1,144 @@
 # XtractForge
 
-A modern, cross-platform desktop GUI for downloading media from 1000+ sites — built on **Electron + React + Vite** with a **plugin architecture** that lets you add, enable, disable, and import community-built downloaders.
+<div align="center">
 
-## Built-in Plugins
+![Electron](https://img.shields.io/badge/Electron-33-47848F?logo=electron&logoColor=white)
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
+![Vite](https://img.shields.io/badge/Vite-6-646CFF?logo=vite&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-16+-339933?logo=nodedotjs&logoColor=white)
+![pnpm](https://img.shields.io/badge/pnpm-workspace-F69220?logo=pnpm&logoColor=white)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey)
 
-| Plugin | Type | Sites | Repo |
-|---|---|---|---|
-| **yt-dlp** | Downloader | YouTube, Vimeo, Twitter/X, TikTok, 1000+ | [github.com/yt-dlp/yt-dlp](https://github.com/yt-dlp/yt-dlp) |
-| **Annie** | Downloader | Bilibili, Youku, iQiyi, Weibo, Douyin | [github.com/iawia002/annie](https://github.com/iawia002/annie) |
-| **Lux** | Downloader | Bilibili, Douyin, Kuaishou + Annie's sites | [github.com/iawia002/lux](https://github.com/iawia002/lux) |
-| **gallery-dl** | Downloader | DeviantArt, Pixiv, Reddit, Instagram, Danbooru, 200+ | [github.com/mikf/gallery-dl](https://github.com/mikf/gallery-dl) |
-| **spotDL** | Downloader | Spotify tracks, albums, playlists | [github.com/spotDL/spotify-downloader](https://github.com/spotDL/spotify-downloader) |
-| **Ollama AI** | Searcher | Local AI content discovery | [github.com/ollama/ollama](https://github.com/ollama/ollama) |
+**[Download](#getting-started) · [Plugins & Addons](ADDONS.md) · [Contributing](CONTRIBUTING.md) · [Report a Bug](https://github.com/YOUR_ORG/XtractForge/issues/new?template=bug_report.yml) · [Request a Feature](https://github.com/YOUR_ORG/XtractForge/issues/new?template=feature_request.yml)**
 
-XtractForge auto-detects which plugin to use based on the URL. yt-dlp is the fallback for anything not handled by a more specific plugin.
+</div>
+
+---
+
+**XtractForge** is a modern, open-source, cross-platform desktop app for downloading media from anywhere — YouTube, Spotify, Bilibili, DeviantArt, image galleries, and 1000+ more sites. It runs on **Electron + React + Vite** with a **plugin architecture**: every downloader is a hot-swappable plugin. Enable what you need, disable what you don't, and import community-built plugins with one click.
+
+> **AI-powered discovery** — type what you want to find; a local Ollama model suggests content and hands you the download link.
+
+---
 
 ## Features
 
-- **Plugin system** — enable/disable any plugin; import community plugins as `.js` files
-- **AI Discover tab** — describe what you want; Ollama suggests search queries to download
-- **URL auto-detection** — routes each URL to the right plugin automatically
-- **Download queue** — real-time progress, speed, ETA, cancel
-- **Format selection** — video quality presets, audio-only, or raw format picker
-- **Per-plugin settings** — binary paths, cookies, bitrate, AI model name, etc.
-- **Dark UI** — glassmorphic dark theme
+| | |
+|---|---|
+| 🔌 **Plugin system** | Enable/disable any tool; import community plugins as plain `.js` files |
+| 🤖 **AI Discover** | Describe what you want — Ollama AI suggests downloadable content |
+| 🎯 **Auto-detection** | Paste any URL; XtractForge picks the right plugin automatically |
+| 📊 **Download queue** | Real-time progress, speed, ETA, concurrent downloads, cancel |
+| 🎞 **Format picker** | Quality presets, audio-only (MP3/M4A/WAV), or raw format selection |
+| ⚙️ **Per-plugin config** | Binary paths, cookies, bitrate, AI model — all configurable in Settings |
+| 🌑 **Dark UI** | Glassmorphic dark theme, native macOS/Windows/Linux window chrome |
 
-## Prerequisites
+---
 
-Install Node.js 16+ and pnpm. Then install whichever download tools you need:
+## Built-in Plugins
 
-```bash
-# yt-dlp + ffmpeg (required for most video sites)
-pip install yt-dlp
-brew install ffmpeg
+XtractForge ships with these plugins out of the box:
 
-# gallery-dl (image galleries)
-pip install gallery-dl
+| Plugin | Supported Sites |
+|---|---|
+| **yt-dlp** | YouTube, Vimeo, Twitter/X, TikTok, Twitch, SoundCloud, 1000+ |
+| **Annie** | Bilibili, Youku, iQiyi, Weibo, Douyin |
+| **Lux** | Bilibili, Douyin, Kuaishou + Annie's full site list |
+| **gallery-dl** | DeviantArt, Pixiv, Reddit, Instagram, Danbooru, 200+ image galleries |
+| **spotDL** | Spotify tracks, albums, and playlists (via YouTube Music) |
+| **Ollama AI** | Local AI content discovery (bring your own model) |
 
-# spotDL (Spotify)
-pip install spotdl
+→ Full list, install instructions, and community plugin directory: **[ADDONS.md](ADDONS.md)**
 
-# Annie / Lux (Asian platforms)
-brew install annie
-brew install lux
-
-# Ollama (AI discovery)
-# Download from https://ollama.com then:
-ollama pull llama3
-```
-
-You only need the tools you plan to use. Missing tools are shown in the Plugins tab with install hints.
+---
 
 ## Getting Started
 
+### Requirements
+
+- [Node.js](https://nodejs.org/) 16+
+- [pnpm](https://pnpm.io/) (`npm install -g pnpm`)
+- The download tools you want to use (see [ADDONS.md](ADDONS.md) for install commands)
+
+### Run from source
+
 ```bash
+git clone https://github.com/YOUR_ORG/XtractForge.git
+cd XtractForge
 pnpm install
 pnpm dev
 ```
 
-Build for production:
+### Build a distributable
 
 ```bash
-pnpm package:mac
-pnpm package:win
-pnpm package:linux
-pnpm package:all
+pnpm package:mac     # macOS DMG + ZIP
+pnpm package:win     # Windows NSIS installer
+pnpm package:linux   # AppImage + deb
+pnpm package:all     # All platforms
 ```
 
 Packages are saved to `dist-package/`.
 
-## Writing a Plugin
+---
 
-A plugin is a single `.js` file. Drop it in the **Plugins Folder** (accessible from the Plugins tab) or use **Import Plugin**.
+## Using XtractForge
 
-```js
-module.exports = {
-  id: 'my-tool',
-  name: 'My Tool',
-  description: 'Downloads from example.com',
-  type: 'downloader',       // 'downloader' | 'searcher'
-  icon: '🔧',
-  repoUrl: 'https://github.com/org/my-tool',
-  installHint: 'pip install my-tool',
+1. **Paste a URL** in the Download tab — XtractForge identifies the right plugin automatically
+2. **Choose quality** — video preset, audio-only, or pick a raw format
+3. **Click Download** — progress appears in the Queue tab
+4. **Discover content** — use the AI Discover tab to find content by description (requires Ollama)
+5. **Manage plugins** — enable, disable, or import new plugins from the Plugins tab
 
-  configSchema: [
-    { key: 'myToolPath', label: 'Binary path', type: 'text', default: 'my-tool', placeholder: '/usr/local/bin/my-tool' },
-    { key: 'myFlag',     label: 'Enable X',    type: 'toggle', default: false },
-    { key: 'myFormat',   label: 'Format',      type: 'select', default: 'mp4', options: ['mp4', 'mkv'] },
-  ],
+Missing a tool? The Plugins tab shows which tools aren't installed, with one-line install commands.
 
-  checkDependency(config) {
-    // Return { available: bool, version: string }
-  },
+---
 
-  canHandle(url) {
-    return url.includes('example.com');
-  },
+## Plugins & Community Addons
 
-  async getInfo(url, config) {
-    // Return { success: true, data: { title, thumbnail, thumbnails, duration, uploader, formats, _plugin } }
-  },
+XtractForge's plugin system lets anyone build and share a downloader plugin. A plugin is a single `.js` file — no framework, no bundler, just CommonJS.
 
-  buildDownloadArgs(url, options, config) {
-    // Return { binary: string, args: string[] }
-  },
+→ **[ADDONS.md](ADDONS.md)** — built-in plugin details, community plugin list, install guide, and full plugin API reference
 
-  parseProgress(line) {
-    // Return { percent, speed, eta, size } or null
-  },
-};
-```
+---
 
-See [electron/plugins/ytdlp.js](electron/plugins/ytdlp.js) for a complete reference implementation.
+## Contributing
+
+Contributions of all kinds are welcome — bug fixes, new plugins, UI improvements, documentation, and testing on different platforms.
+
+→ **[CONTRIBUTING.md](CONTRIBUTING.md)** — development setup, project structure, plugin authoring guide, and PR checklist
+
+Quick links:
+- [Report a bug](https://github.com/YOUR_ORG/XtractForge/issues/new?template=bug_report.yml)
+- [Request a feature](https://github.com/YOUR_ORG/XtractForge/issues/new?template=feature_request.yml)
+- [Submit a plugin](https://github.com/YOUR_ORG/XtractForge/issues/new?template=plugin_submission.yml)
+
+---
 
 ## Architecture
 
 ```
 electron/
-  main.js              Main process — IPC handlers, plugin dispatch
+  main.js              Main process — IPC handlers, plugin dispatch, settings
   preload.js           Secure IPC bridge (contextBridge)
   plugin-manager.js    Plugin registry, URL routing, dependency checks, external loading
-  plugins/
-    ytdlp.js           yt-dlp plugin
-    annie.js           Annie plugin
-    lux.js             Lux plugin
-    gallery-dl.js      gallery-dl plugin
-    spotdl.js          spotDL plugin
-    ollama.js          Ollama AI searcher
+  plugins/             Built-in plugins (one self-contained .js file each)
 src/
-  App.jsx              React UI — Download, Queue, AI Discover, Plugins, Settings
+  App.jsx              React UI — Download, Queue, AI Discover, Plugins, Settings tabs
   index.css            Dark theme
 ```
 
-External plugins live in `<userData>/plugins/` and are loaded automatically on startup.
+→ Full IPC contracts, data flow diagrams, and plugin internals: **[AGENTS.md](AGENTS.md)**
+
+---
+
+## License & Legal
+
+XtractForge is released under the **[MIT License](LICENSE)**.
+
+By using this software you agree to the **[End User License Agreement (EULA)](EULA.md)**. XtractForge is a tool — you are solely responsible for using it in compliance with applicable law and the terms of service of any site you access. The developers do not endorse piracy or copyright infringement.
+
+Third-party tools (yt-dlp, ffmpeg, Annie, Lux, gallery-dl, spotDL, Ollama) are not bundled and are governed by their own licenses.
+
+For security vulnerabilities, see **[SECURITY.md](SECURITY.md)**.
