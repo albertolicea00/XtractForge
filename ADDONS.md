@@ -75,7 +75,13 @@ module.exports = {
   type: 'downloader',
   icon: '🔧',
   repoUrl: 'https://github.com/org/my-tool',
-  installHint: 'pip install my-tool',
+  installHint: 'pip install my-tool',         // fallback shown when not installed
+  install: {                                  // optional: per-OS command, picked automatically
+    darwin: 'brew install my-tool',
+    win32: 'winget install my-tool',
+    linux: 'pipx install my-tool',
+    default: 'pip install my-tool',
+  },
 
   configSchema: [
     { key: 'myToolPath', label: 'Binary path', type: 'text',   default: 'my-tool', placeholder: '/usr/local/bin/my-tool' },

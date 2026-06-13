@@ -4,7 +4,7 @@ import {
   CheckCircle2, AlertTriangle, Trash2, Sliders, Search,
   Clock, User, FileVideo, Music, XCircle, ExternalLink, ChevronRight,
   RefreshCw, HardDrive, Puzzle, Zap, ToggleLeft, ToggleRight,
-  UploadCloud, FolderOpen, Palette, Check,
+  UploadCloud, FolderOpen, Palette, Check, Copy, ShieldAlert,
 } from 'lucide-react';
 
 // ─── helpers ────────────────────────────────────────────────────────────────
@@ -114,6 +114,15 @@ function applyTheme(theme, settings) {
 
 const ACCENT_PRESETS = ['#adc6ff', '#ff8a80', '#34d399', '#c4b5fd', '#fbbf24'];
 
+// Pick the OS-appropriate install command for a plugin, falling back to the
+// generic installHint. plugin.install is an optional { darwin, win32, linux, default } map.
+function resolveInstall(plugin, platform) {
+  if (plugin.install && typeof plugin.install === 'object') {
+    return plugin.install[platform] || plugin.install.default || plugin.installHint || '';
+  }
+  return plugin.installHint || '';
+}
+
 // ─── App ────────────────────────────────────────────────────────────────────
 
 export default function App() {
@@ -155,6 +164,8 @@ export default function App() {
 
   // Import plugin feedback
   const [importResult, setImportResult] = useState(null);
+  // Tracks which plugin's install command was just copied (for "Copied!" feedback)
+  const [copiedInstall, setCopiedInstall] = useState(null);
 
   // Themes
   const [themes, setThemes] = useState([]);
@@ -346,6 +357,16 @@ export default function App() {
     if (result.success) await refreshPlugins();
   };
 
+  const handleCopyInstall = async (id, cmd) => {
+    try {
+      await navigator.clipboard.writeText(cmd);
+      setCopiedInstall(id);
+      setTimeout(() => setCopiedInstall(prev => (prev === id ? null : prev)), 1600);
+    } catch (err) {
+      console.error('Clipboard write failed:', err);
+    }
+  };
+
   const handleSaveSettings = async () => {
     await window.api.saveSettings(settings);
     await window.api.savePluginConfigs(pluginConfigs);
@@ -391,7 +412,6 @@ export default function App() {
       {/* Sidebar */}
       <aside className="sidebar">
         <div className="brand">
-          <div className="brand-icon"><Download /></div>
           <span className="brand-name">XtractForge</span>
         </div>
 
@@ -749,6 +769,19 @@ export default function App() {
                 </div>
               </div>
 
+              {/* Security warning — external plugins run with full Node.js access in the main process */}
+              <div className="error-banner" style={{ marginBottom: '16px', background: 'rgba(244, 63, 94, 0.1)', borderColor: 'var(--text-error)' }}>
+                <ShieldAlert size={20} />
+                <div>
+                  <strong>Only import plugins you trust</strong>
+                  <p style={{ fontSize: '12px', marginTop: '2px', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                    A plugin is executable code that runs with full access to your computer — files, network, and shell commands.
+                    A malicious plugin from an unknown author can steal data or damage your system. Never import a <code>.js</code> file
+                    from someone you don't trust, and read the source before installing.
+                  </p>
+                </div>
+              </div>
+
               {importResult && (
                 <div className={importResult.success ? 'error-banner' : 'error-banner'} style={{ marginBottom: '16px', borderColor: importResult.success ? 'var(--text-success)' : undefined }}>
                   {importResult.success ? <CheckCircle2 size={18} style={{ color: 'var(--text-success)' }} /> : <AlertTriangle size={18} />}
@@ -781,9 +814,19 @@ export default function App() {
                             <ExternalLink size={10} /> {plugin.repoUrl}
                           </a>
                         )}
-                        {!plugin.available && plugin.installHint && (
-                          <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px' }}>
-                            Install: <code style={{ color: 'var(--text-secondary)' }}>{plugin.installHint}</code>
+                        {!plugin.available && resolveInstall(plugin, window.api.platform) && (
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '8px', flexWrap: 'wrap' }}>
+                            <span style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Install</span>
+                            <code style={{ fontSize: '12px', color: 'var(--text-secondary)', background: 'var(--bg-input)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', padding: '4px 8px' }}>
+                              {resolveInstall(plugin, window.api.platform)}
+                            </code>
+                            <button
+                              className="btn btn-secondary"
+                              style={{ padding: '4px 10px', fontSize: '11px' }}
+                              onClick={() => handleCopyInstall(id, resolveInstall(plugin, window.api.platform))}
+                            >
+                              {copiedInstall === id ? <><Check size={12} style={{ color: 'var(--text-success)' }} /> Copied</> : <><Copy size={12} /> Copy</>}
+                            </button>
                           </div>
                         )}
                       </div>

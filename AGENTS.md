@@ -38,7 +38,13 @@ Every plugin is a CommonJS module (`module.exports = { ... }`) with these fields
   type: 'downloader' | 'searcher',
   icon: string,        // emoji
   repoUrl: string,     // GitHub or project URL shown in the UI
-  installHint: string, // one-line install command shown when not available
+  installHint: string, // generic one-line install command (fallback)
+  install?: {          // optional per-OS install commands; UI picks by process.platform
+    darwin?: string,
+    win32?: string,
+    linux?: string,
+    default?: string,  // used when the current platform has no entry
+  },
 
   // Settings schema rendered in Settings → [Plugin] tab
   configSchema: Array<{

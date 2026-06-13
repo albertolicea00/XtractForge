@@ -11,6 +11,14 @@ module.exports = {
   icon: '▶',
   repoUrl: 'https://github.com/yt-dlp/yt-dlp',
   installHint: 'pip install yt-dlp  OR  brew install yt-dlp',
+  // Per-OS install command. The renderer picks install[process.platform] and
+  // falls back to install.default, then installHint.
+  install: {
+    darwin: 'brew install yt-dlp ffmpeg',
+    win32: 'winget install yt-dlp.yt-dlp',
+    linux: 'pipx install yt-dlp',
+    default: 'pip install yt-dlp',
+  },
 
   configSchema: [
     { key: 'ytdlpPath', label: 'yt-dlp binary path', type: 'text', default: 'yt-dlp', placeholder: '/usr/local/bin/yt-dlp' },

@@ -117,6 +117,9 @@ function checkAllDependencies(globalConfig) {
       description: plugin.description,
       type: plugin.type,
       icon: plugin.icon || '🔌',
+      repoUrl: plugin.repoUrl || '',
+      installHint: plugin.installHint || '',
+      install: plugin.install || null,
       configSchema: plugin.configSchema || [],
       isBuiltin: BUILTIN_PLUGINS.includes(plugin),
     };

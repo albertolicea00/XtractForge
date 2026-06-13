@@ -16,6 +16,12 @@ module.exports = {
   icon: '🖼',
   repoUrl: 'https://github.com/mikf/gallery-dl',
   installHint: 'pip install gallery-dl  OR  brew install gallery-dl',
+  install: {
+    darwin: 'brew install gallery-dl',
+    win32: 'pip install gallery-dl',
+    linux: 'pipx install gallery-dl',
+    default: 'pip install gallery-dl',
+  },
 
   configSchema: [
     { key: 'galleryDlPath', label: 'gallery-dl binary path', type: 'text', default: 'gallery-dl', placeholder: '/usr/local/bin/gallery-dl' },

@@ -15,6 +15,12 @@ module.exports = {
   icon: '⚡',
   repoUrl: 'https://github.com/iawia002/lux',
   installHint: 'go install github.com/iawia002/lux@latest  OR  brew install lux',
+  install: {
+    darwin: 'brew install lux',
+    win32: 'scoop install lux',
+    linux: 'go install github.com/iawia002/lux@latest',
+    default: 'go install github.com/iawia002/lux@latest',
+  },
 
   configSchema: [
     { key: 'luxPath', label: 'lux binary path', type: 'text', default: 'lux', placeholder: '/usr/local/bin/lux' },

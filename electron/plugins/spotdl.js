@@ -9,6 +9,12 @@ module.exports = {
   icon: '🎵',
   repoUrl: 'https://github.com/spotDL/spotify-downloader',
   installHint: 'pip install spotdl',
+  install: {
+    darwin: 'brew install spotdl',
+    win32: 'pip install spotdl',
+    linux: 'pipx install spotdl',
+    default: 'pip install spotdl',
+  },
 
   configSchema: [
     { key: 'spotdlPath', label: 'spotdl binary path', type: 'text', default: 'spotdl', placeholder: '/usr/local/bin/spotdl' },
