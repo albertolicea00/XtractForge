@@ -24,9 +24,9 @@ module.exports = {
   },
 
   configSchema: [
-    { key: 'luxPath', label: 'lux binary path', type: 'text', default: 'lux', placeholder: '/usr/local/bin/lux' },
-    { key: 'luxCookie', label: 'Cookie string (optional)', type: 'text', default: '', placeholder: 'Cookie for authenticated downloads' },
-    { key: 'luxMultiThread', label: 'Multi-thread download', type: 'toggle', default: false },
+    { key: 'luxPath', label: 'lux binary path', type: 'text', default: 'lux', placeholder: '/usr/local/bin/lux', help: "Path to the lux executable. Leave as default if it's on your PATH." },
+    { key: 'luxCookie', label: 'Cookie string (optional)', type: 'text', default: '', placeholder: 'Cookie for authenticated downloads', help: 'Raw cookie string for sites that require login to access content.' },
+    { key: 'luxMultiThread', label: 'Multi-thread download', type: 'toggle', default: false, help: 'Download with multiple threads for higher speed. May be rejected by some sites.' },
   ],
 
   checkDependency(config) {

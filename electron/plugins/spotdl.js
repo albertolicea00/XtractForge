@@ -11,16 +11,16 @@ module.exports = {
   repoUrl: 'https://github.com/spotDL/spotify-downloader',
   installHint: 'pip install spotdl',
   install: {
-    darwin: 'brew install spotdl',
+    darwin: 'pip install spotdl',
     win32: 'pip install spotdl',
     linux: 'pipx install spotdl',
     default: 'pip install spotdl',
   },
 
   configSchema: [
-    { key: 'spotdlPath', label: 'spotdl binary path', type: 'text', default: 'spotdl', placeholder: '/usr/local/bin/spotdl' },
-    { key: 'spotdlFormat', label: 'Output format', type: 'select', default: 'mp3', options: ['mp3', 'flac', 'ogg', 'opus', 'm4a', 'wav'] },
-    { key: 'spotdlBitrate', label: 'Bitrate', type: 'select', default: '320k', options: ['128k', '192k', '256k', '320k'] },
+    { key: 'spotdlPath', label: 'spotdl binary path', type: 'text', default: 'spotdl', placeholder: '/usr/local/bin/spotdl', help: "Path to the spotdl executable. Leave as default if it's on your PATH." },
+    { key: 'spotdlFormat', label: 'Output format', type: 'select', default: 'mp3', options: ['mp3', 'flac', 'ogg', 'opus', 'm4a', 'wav'], help: 'Audio container/codec for downloaded tracks. FLAC/WAV are lossless and larger.' },
+    { key: 'spotdlBitrate', label: 'Bitrate', type: 'select', default: '320k', options: ['128k', '192k', '256k', '320k'], help: 'Target audio bitrate. Higher = better quality and larger files (ignored for lossless formats).' },
   ],
 
   checkDependency(config) {

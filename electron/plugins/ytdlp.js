@@ -22,11 +22,11 @@ module.exports = {
   },
 
   configSchema: [
-    { key: 'ytdlpPath', label: 'yt-dlp binary path', type: 'text', default: 'yt-dlp', placeholder: '/usr/local/bin/yt-dlp' },
-    { key: 'ffmpegPath', label: 'ffmpeg binary path', type: 'text', default: 'ffmpeg', placeholder: '/usr/local/bin/ffmpeg' },
-    { key: 'embedSubtitles', label: 'Embed Subtitles', type: 'toggle', default: false },
-    { key: 'sponsorBlock', label: 'SponsorBlock', type: 'toggle', default: false },
-    { key: 'speedLimit', label: 'Speed Limit', type: 'text', default: '', placeholder: '50K, 10M (empty = unlimited)' },
+    { key: 'ytdlpPath', label: 'yt-dlp binary path', type: 'text', default: 'yt-dlp', placeholder: '/usr/local/bin/yt-dlp', help: "Path to the yt-dlp executable. Leave as 'yt-dlp' if it's on your PATH." },
+    { key: 'ffmpegPath', label: 'ffmpeg binary path', type: 'text', default: 'ffmpeg', placeholder: '/usr/local/bin/ffmpeg', help: 'Path to ffmpeg, used to merge separate video+audio streams and convert formats.' },
+    { key: 'embedSubtitles', label: 'Embed Subtitles', type: 'toggle', default: false, help: 'Download available subtitles and embed them into the video file.' },
+    { key: 'sponsorBlock', label: 'SponsorBlock', type: 'toggle', default: false, help: 'Skip sponsor/intro/outro segments on YouTube using the SponsorBlock database.' },
+    { key: 'speedLimit', label: 'Speed Limit', type: 'text', default: '', placeholder: '50K, 10M (empty = unlimited)', help: 'Cap download speed, e.g. 50K or 10M. Leave empty for unlimited.' },
   ],
 
   checkDependency(config) {

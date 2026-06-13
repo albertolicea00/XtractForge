@@ -4,7 +4,7 @@ import {
   CheckCircle2, AlertTriangle, Trash2, Sliders, Search,
   Clock, User, FileVideo, Music, XCircle, ChevronRight,
   RefreshCw, HardDrive, Puzzle, Zap, ToggleLeft, ToggleRight,
-  UploadCloud, FolderOpen, Palette, Check, Copy, ShieldAlert, Globe,
+  UploadCloud, FolderOpen, Palette, Check, Copy, ShieldAlert, Globe, HelpCircle,
 } from 'lucide-react';
 
 // ─── helpers ────────────────────────────────────────────────────────────────
@@ -472,7 +472,8 @@ export default function App() {
             {availableDownloaders.map(p => (
               <div key={p.id} className="status-badge">
                 <span className="status-indicator success"></span>
-                <span style={{ fontSize: '11px' }}>{p.icon} {p.name}</span>
+                <span style={{ fontSize: '11px' }}> {p.name}</span>
+                {/* <span style={{ fontSize: '11px' }}> {p.name} {p.version.replace(/[^0-9.]/g, "")}</span> */}
               </div>
             ))}
             <button
@@ -1149,9 +1150,21 @@ export default function App() {
                   </div>
                   {expanded && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '16px' }}>
+                      {plugin.description && (
+                        <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: '4px' }}>
+                          {plugin.description}
+                        </p>
+                      )}
                       {plugin.configSchema.map(field => (
                         <div key={field.key} className="input-group" style={{ marginBottom: 0 }}>
-                          <label>{field.label}</label>
+                          <label style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                            {field.label}
+                            {field.help && (
+                              <span className="help-tip" data-tip={field.help}>
+                                <HelpCircle size={13} />
+                              </span>
+                            )}
+                          </label>
                           {field.type === 'toggle' ? (
                             <label className="switch">
                               <input type="checkbox" checked={!!(cfg[field.key] ?? field.default)} onChange={(e) => setPluginConfigs(prev => ({ ...prev, [id]: { ...(prev[id] || {}), [field.key]: e.target.checked } }))} />

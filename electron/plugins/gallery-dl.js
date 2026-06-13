@@ -12,7 +12,7 @@ module.exports = {
   id: 'gallery-dl',
   name: 'gallery-dl',
   order: 2,
-  description: 'Download image galleries from DeviantArt, Pixiv, Reddit, Instagram, Danbooru, and more',
+  description: 'Download image galleries from DeviantArt, Pixiv, Reddit, Instagram, and more',
   type: 'downloader',
   icon: '🖼',
   repoUrl: 'https://github.com/mikf/gallery-dl',
@@ -25,9 +25,9 @@ module.exports = {
   },
 
   configSchema: [
-    { key: 'galleryDlPath', label: 'gallery-dl binary path', type: 'text', default: 'gallery-dl', placeholder: '/usr/local/bin/gallery-dl' },
-    { key: 'galleryDlCookies', label: 'Cookies file (optional)', type: 'text', default: '', placeholder: '/path/to/cookies.txt' },
-    { key: 'galleryDlConfig', label: 'Config file (optional)', type: 'text', default: '', placeholder: '/path/to/gallery-dl.conf' },
+    { key: 'galleryDlPath', label: 'gallery-dl binary path', type: 'text', default: 'gallery-dl', placeholder: '/usr/local/bin/gallery-dl', help: "Path to the gallery-dl executable. Leave as default if it's on your PATH." },
+    { key: 'galleryDlCookies', label: 'Cookies file (optional)', type: 'text', default: '', placeholder: '/path/to/cookies.txt', help: 'Path to a cookies.txt file. Required for sites that need login (e.g. private galleries).' },
+    { key: 'galleryDlConfig', label: 'Config file (optional)', type: 'text', default: '', placeholder: '/path/to/gallery-dl.conf', help: 'Path to a custom gallery-dl config file for advanced per-site options.' },
   ],
 
   checkDependency(config) {
