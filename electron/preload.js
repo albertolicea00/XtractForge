@@ -13,6 +13,9 @@ contextBridge.exposeInMainWorld('api', {
   getVideoInfo: (url) => ipcRenderer.invoke('get-video-info', url),
   startDownload: (downloadId, url, options) => ipcRenderer.invoke('start-download', downloadId, url, options),
   cancelDownload: (downloadId) => ipcRenderer.invoke('cancel-download', downloadId),
+  pauseDownload: (downloadId) => ipcRenderer.invoke('pause-download', downloadId),
+  resumeDownload: (downloadId) => ipcRenderer.invoke('resume-download', downloadId),
+  getDiskFree: () => ipcRenderer.invoke('get-disk-free'),
 
   // Settings
   getSettings: () => ipcRenderer.invoke('get-settings'),
@@ -50,5 +53,10 @@ contextBridge.exposeInMainWorld('api', {
     const sub = (event, data) => callback(data);
     ipcRenderer.on('download-error', sub);
     return () => ipcRenderer.removeListener('download-error', sub);
+  },
+  onDownloadLog: (callback) => {
+    const sub = (event, data) => callback(data);
+    ipcRenderer.on('download-log', sub);
+    return () => ipcRenderer.removeListener('download-log', sub);
   },
 });

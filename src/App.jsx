@@ -4,7 +4,7 @@ import {
   CheckCircle2, AlertTriangle, Trash2, Sliders, Search,
   Clock, User, FileVideo, Music, XCircle, ChevronRight,
   RefreshCw, HardDrive, Puzzle, Zap, ToggleLeft, ToggleRight,
-  UploadCloud, FolderOpen, Palette, Check, Copy, ShieldAlert, Globe, HelpCircle,
+  UploadCloud, FolderOpen, Palette, Check, Copy, ShieldAlert, Globe, HelpCircle, Pause,
 } from 'lucide-react';
 
 // ─── helpers ────────────────────────────────────────────────────────────────
@@ -35,6 +35,26 @@ function formatBytes(bytes, decimals = 2) {
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return parseFloat((bytes / Math.pow(k, i)).toFixed(decimals < 0 ? 0 : decimals)) + ' ' + sizes[i];
 }
+
+// Parse a human speed string (e.g. "1.23MiB/s", "950 KB/s") into bytes/second.
+function parseSpeedToBps(str) {
+  if (typeof str !== 'string') return 0;
+  const m = str.match(/([\d.]+)\s*([KMGT]?)(i?)B\/s/i);
+  if (!m) return 0;
+  const n = parseFloat(m[1]);
+  if (Number.isNaN(n)) return 0;
+  const base = m[3] ? 1024 : 1000;
+  const exp = { '': 0, K: 1, M: 2, G: 3, T: 4 }[m[2].toUpperCase()] ?? 0;
+  return n * Math.pow(base, exp);
+}
+
+const QUEUE_STATUS = {
+  downloading: { label: 'Extracting', color: 'var(--primary)' },
+  queued: { label: 'Waiting for allocation', color: 'var(--text-secondary)' },
+  paused: { label: 'Paused', color: 'var(--text-secondary)' },
+  completed: { label: 'Completed', color: 'var(--text-success)' },
+  error: { label: 'Failed', color: 'var(--text-error)' },
+};
 
 // ─── theme application ────────────────────────────────────────────────────────
 // A theme is { variables: { '--x': value } } + optional raw `css`. We inject a
@@ -148,6 +168,12 @@ export default function App() {
 
   // Download queue
   const [queue, setQueue] = useState([]);
+  // Raw console output per download id: { [id]: string }
+  const [logs, setLogs] = useState({});
+  // Which queue items have their console output expanded
+  const [expandedLogs, setExpandedLogs] = useState({});
+  // Free disk space on the download volume (bytes), refreshed periodically
+  const [diskFree, setDiskFree] = useState(null);
 
   // Global settings
   const [settings, setSettings] = useState({
@@ -226,7 +252,7 @@ export default function App() {
     const unsub1 = window.api.onDownloadProgress((data) => {
       setQueue(prev => prev.map(item =>
         item.id === data.downloadId
-          ? { ...item, percent: data.percent, speed: data.speed, eta: data.eta, size: data.size, status: 'downloading' }
+          ? { ...item, percent: data.percent, speed: data.speed, eta: data.eta, size: data.size, status: item.status === 'paused' ? 'paused' : 'downloading' }
           : item
       ));
     });
@@ -243,8 +269,27 @@ export default function App() {
       ));
     });
 
-    return () => { unsub1(); unsub2(); unsub3(); };
+    const unsub4 = window.api.onDownloadLog((data) => {
+      setLogs(prev => {
+        const existing = prev[data.downloadId] || '';
+        // Keep only the last ~8000 chars per download to bound memory
+        const combined = (existing + data.chunk).slice(-8000);
+        return { ...prev, [data.downloadId]: combined };
+      });
+    });
+
+    return () => { unsub1(); unsub2(); unsub3(); unsub4(); };
   }, [refreshPlugins, loadThemes]);
+
+  // Refresh free disk space when viewing the queue
+  useEffect(() => {
+    if (activeTab !== 'queue') return;
+    let alive = true;
+    const tick = () => window.api.getDiskFree().then(v => { if (alive) setDiskFree(v); }).catch(() => {});
+    tick();
+    const t = setInterval(tick, 5000);
+    return () => { alive = false; clearInterval(t); };
+  }, [activeTab]);
 
   // Apply the active theme + user settings whenever any of them change
   useEffect(() => {
@@ -349,6 +394,30 @@ export default function App() {
       item.id === id ? { ...item, status: 'error', errorMsg: 'Cancelled by user' } : item
     ));
   };
+
+  const handlePauseDownload = async (id) => {
+    const ok = await window.api.pauseDownload(id);
+    if (ok) setQueue(prev => prev.map(item => item.id === id ? { ...item, status: 'paused' } : item));
+  };
+
+  const handleResumeDownload = async (id) => {
+    const ok = await window.api.resumeDownload(id);
+    if (ok) setQueue(prev => prev.map(item => item.id === id ? { ...item, status: 'downloading' } : item));
+  };
+
+  // Move a queue item up or down in the list (cosmetic ordering)
+  const moveQueueItem = (id, dir) => {
+    setQueue(prev => {
+      const i = prev.findIndex(x => x.id === id);
+      const j = i + dir;
+      if (i < 0 || j < 0 || j >= prev.length) return prev;
+      const next = [...prev];
+      [next[i], next[j]] = [next[j], next[i]];
+      return next;
+    });
+  };
+
+  const toggleLog = (id) => setExpandedLogs(prev => ({ ...prev, [id]: !prev[id] }));
 
   const handleSelectFolder = async () => {
     const folder = await window.api.selectFolder();
@@ -756,8 +825,12 @@ export default function App() {
               </div>
             ) : (
               <div className="queue-list">
-                {queue.map(item => (
-                  <div key={item.id} className="queue-item">
+                {queue.map((item, idx) => {
+                  const st = QUEUE_STATUS[item.status] || QUEUE_STATUS.queued;
+                  const log = logs[item.id];
+                  const showExpand = !!log;
+                  return (
+                  <div key={item.id} className="queue-item" style={{ flexWrap: 'wrap' }}>
                     {item.thumbnail ? (
                       <img src={item.thumbnail} alt="" style={{ width: '96px', height: '54px', objectFit: 'cover', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', flexShrink: 0 }} />
                     ) : (
@@ -767,38 +840,85 @@ export default function App() {
                     )}
                     <div className="queue-item-info">
                       <div className="queue-item-title" title={item.title}>{item.title}</div>
-                      {item.pluginId && pluginStatus[item.pluginId] && (
-                        <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
-                          {pluginStatus[item.pluginId].icon} {pluginStatus[item.pluginId].name}
-                        </div>
-                      )}
-                      {item.status === 'downloading' && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                        <span style={{ fontSize: '11px', fontWeight: 600, color: st.color }}>● {st.label}</span>
+                        {item.pluginId && pluginStatus[item.pluginId] && (
+                          <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                            {pluginStatus[item.pluginId].icon} {pluginStatus[item.pluginId].name}
+                          </span>
+                        )}
+                      </div>
+                      {(item.status === 'downloading' || item.status === 'paused') && (
                         <>
                           <div className="queue-item-meta">
-                            <span>Progress: {item.percent?.toFixed(1)}%</span>
-                            <span>Size: {item.size}</span>
-                            <span>Speed: {item.speed}</span>
-                            <span>ETA: {item.eta}</span>
+                            <span>{item.percent?.toFixed(1)}%</span>
+                            {item.size && <span>Size: {item.size}</span>}
+                            {item.status === 'downloading' && item.speed && <span>Speed: {item.speed}</span>}
+                            {item.status === 'downloading' && item.eta && <span>ETA: {item.eta}</span>}
                           </div>
                           <div className="progress-container">
-                            <div className="progress-bar" style={{ width: `${item.percent || 0}%` }}></div>
+                            <div className="progress-bar" style={{ width: `${item.percent || 0}%`, opacity: item.status === 'paused' ? 0.5 : 1 }}></div>
                           </div>
                         </>
                       )}
-                      {item.status === 'queued' && <div className="queue-item-meta"><span style={{ color: 'var(--text-muted)' }}>Waiting to start...</span></div>}
-                      {item.status === 'completed' && <div className="queue-item-meta" style={{ color: 'var(--text-success)' }}><CheckCircle2 size={12} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '4px' }} />Completed.</div>}
-                      {item.status === 'error' && <div className="queue-item-meta" style={{ color: 'var(--text-error)', fontSize: '11px' }}><AlertTriangle size={12} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '4px' }} />Error: {item.errorMsg}</div>}
+                      {item.status === 'error' && <div className="queue-item-meta" style={{ color: 'var(--text-error)', fontSize: '11px' }}>{item.errorMsg}</div>}
+                      {showExpand && (
+                        <button onClick={() => toggleLog(item.id)} style={{ alignSelf: 'flex-start', marginTop: '4px', background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '11px', fontFamily: 'var(--font-sans)', display: 'inline-flex', alignItems: 'center', gap: '4px', padding: 0 }}>
+                          <ChevronRight size={12} style={{ transform: expandedLogs[item.id] ? 'rotate(90deg)' : 'none', transition: 'var(--transition-fast)' }} />
+                          {expandedLogs[item.id] ? 'Hide output' : 'Show output'}
+                        </button>
+                      )}
                     </div>
                     <div className="queue-item-actions">
-                      {item.status === 'downloading' && <><span className="badge badge-downloading">Downloading</span><button onClick={() => handleCancelDownload(item.id)} className="btn btn-danger" style={{ padding: '8px' }}><XCircle size={16} /></button></>}
-                      {item.status === 'queued' && <span className="badge badge-queued">Queued</span>}
-                      {item.status === 'completed' && <><span className="badge badge-completed">Done</span><button onClick={() => window.api.openFolder(item.folder)} className="btn btn-secondary" style={{ padding: '8px' }}><Folder size={16} /></button><button onClick={() => setQueue(prev => prev.filter(i => i.id !== item.id))} className="btn btn-secondary" style={{ padding: '8px' }}><Trash2 size={16} /></button></>}
-                      {item.status === 'error' && <><span className="badge badge-error">Failed</span><button onClick={() => setQueue(prev => prev.filter(i => i.id !== item.id))} className="btn btn-secondary" style={{ padding: '8px' }}><Trash2 size={16} /></button></>}
+                      {(item.status === 'downloading' || item.status === 'paused') && (
+                        <>
+                          {item.status === 'downloading'
+                            ? <button onClick={() => handlePauseDownload(item.id)} className="btn btn-secondary" style={{ padding: '8px' }} title="Pause"><Pause size={16} /></button>
+                            : <button onClick={() => handleResumeDownload(item.id)} className="btn btn-secondary" style={{ padding: '8px' }} title="Resume"><Play size={16} /></button>}
+                          <button onClick={() => handleCancelDownload(item.id)} className="btn btn-danger" style={{ padding: '8px' }} title="Cancel"><XCircle size={16} /></button>
+                        </>
+                      )}
+                      {item.status === 'completed' && <><button onClick={() => window.api.openFolder(item.folder)} className="btn btn-secondary" style={{ padding: '8px' }} title="Open folder"><Folder size={16} /></button><button onClick={() => setQueue(prev => prev.filter(i => i.id !== item.id))} className="btn btn-secondary" style={{ padding: '8px' }} title="Remove"><Trash2 size={16} /></button></>}
+                      {item.status === 'error' && <button onClick={() => setQueue(prev => prev.filter(i => i.id !== item.id))} className="btn btn-secondary" style={{ padding: '8px' }} title="Remove"><Trash2 size={16} /></button>}
+                      {/* Reorder */}
+                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <button onClick={() => moveQueueItem(item.id, -1)} disabled={idx === 0} className="btn btn-secondary" style={{ padding: '2px 6px', opacity: idx === 0 ? 0.4 : 1 }} title="Move up"><ChevronRight size={12} style={{ transform: 'rotate(-90deg)' }} /></button>
+                        <button onClick={() => moveQueueItem(item.id, 1)} disabled={idx === queue.length - 1} className="btn btn-secondary" style={{ padding: '2px 6px', opacity: idx === queue.length - 1 ? 0.4 : 1 }} title="Move down"><ChevronRight size={12} style={{ transform: 'rotate(90deg)' }} /></button>
+                      </div>
                     </div>
+
+                    {/* Expandable console output */}
+                    {showExpand && expandedLogs[item.id] && (
+                      <pre style={{ flexBasis: '100%', margin: '4px 0 0', maxHeight: '180px', overflow: 'auto', background: 'var(--bg-deep)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', padding: '10px 12px', fontSize: '11px', lineHeight: 1.5, color: 'var(--text-secondary)', fontFamily: "'SFMono-Regular', Consolas, monospace", whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+                        {log}
+                      </pre>
+                    )}
                   </div>
-                ))}
+                  );
+                })}
               </div>
             )}
+
+            {/* Summary bar */}
+            {queue.length > 0 && (() => {
+              const extracting = queue.filter(i => i.status === 'downloading').length;
+              const waiting = queue.filter(i => i.status === 'queued' || i.status === 'paused').length;
+              const done = queue.filter(i => i.status === 'completed').length;
+              const totalBps = queue.filter(i => i.status === 'downloading').reduce((sum, i) => sum + parseSpeedToBps(i.speed), 0);
+              return (
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap', marginTop: '20px', paddingTop: '16px', borderTop: '1px solid var(--border-color)', fontSize: '11px', fontWeight: 600, letterSpacing: '0.5px', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '18px', flexWrap: 'wrap' }}>
+                    <span style={{ color: 'var(--primary)' }}>● {extracting} Extracting</span>
+                    <span style={{ color: 'var(--text-muted)' }}>● {waiting} Waiting</span>
+                    <span style={{ color: 'var(--text-success)' }}>● {done} Completed</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '18px', flexWrap: 'wrap' }}>
+                    <span>Total speed: <strong style={{ color: 'var(--text-primary)' }}>{totalBps > 0 ? formatBytes(totalBps) + '/s' : '—'}</strong></span>
+                    {diskFree != null && <span>Storage free: <strong style={{ color: 'var(--text-primary)' }}>{formatBytes(diskFree)}</strong></span>}
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         )}
 

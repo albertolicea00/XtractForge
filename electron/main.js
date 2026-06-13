@@ -278,6 +278,34 @@ ipcMain.handle('cancel-download', (event, downloadId) => {
   return false;
 });
 
+// Pause a running download (SIGSTOP). Not supported on Windows.
+ipcMain.handle('pause-download', (event, downloadId) => {
+  const entry = activeDownloads.get(downloadId);
+  if (entry && process.platform !== 'win32') {
+    try { entry.proc.kill('SIGSTOP'); entry.paused = true; return true; } catch { return false; }
+  }
+  return false;
+});
+
+// Resume a paused download (SIGCONT).
+ipcMain.handle('resume-download', (event, downloadId) => {
+  const entry = activeDownloads.get(downloadId);
+  if (entry && process.platform !== 'win32') {
+    try { entry.proc.kill('SIGCONT'); entry.paused = false; return true; } catch { return false; }
+  }
+  return false;
+});
+
+// Free disk space (bytes) on the volume holding the download folder
+ipcMain.handle('get-disk-free', () => {
+  try {
+    const stats = fs.statfsSync(config.downloadFolder || app.getPath('downloads'));
+    return stats.bavail * stats.bsize;
+  } catch {
+    return null;
+  }
+});
+
 // Open an external URL in the default browser
 ipcMain.handle('open-external', async (event, targetUrl) => {
   if (typeof targetUrl !== 'string' || !/^https?:\/\//i.test(targetUrl)) return false;
@@ -321,24 +349,24 @@ ipcMain.handle('start-download', async (event, downloadId, url, options) => {
   const proc = spawn(binary, args);
   activeDownloads.set(downloadId, { proc, pluginId: plugin.id });
 
-  proc.stdout.on('data', (data) => {
-    const lines = data.toString().split('\n');
+  const handleStream = (data) => {
+    const text = data.toString();
+    const lines = text.split('\n');
     for (const line of lines) {
       const progress = plugin.parseProgress(line);
       if (progress && mainWindow) {
         mainWindow.webContents.send('download-progress', { downloadId, ...progress, status: 'downloading' });
       }
     }
-  });
+    // Stream raw console output to the renderer for the expandable log view
+    if (mainWindow && text.trim()) {
+      mainWindow.webContents.send('download-log', { downloadId, chunk: text });
+    }
+  };
 
+  proc.stdout.on('data', handleStream);
   proc.stderr.on('data', (data) => {
-    const lines = data.toString().split('\n');
-    for (const line of lines) {
-      const progress = plugin.parseProgress(line);
-      if (progress && mainWindow) {
-        mainWindow.webContents.send('download-progress', { downloadId, ...progress, status: 'downloading' });
-      }
-    }
+    handleStream(data);
     console.warn(`[${plugin.id} stderr]: ${data.toString()}`);
   });
 
