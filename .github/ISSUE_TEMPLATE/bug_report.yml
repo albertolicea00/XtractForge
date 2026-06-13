@@ -40,11 +40,9 @@ body:
       label: Which plugin is affected?
       options:
         - yt-dlp
-        - Annie
         - Lux
         - gallery-dl
         - spotDL
-        - Ollama AI
         - External / community plugin
         - Not plugin-specific (app-level)
     validations:

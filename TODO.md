@@ -30,7 +30,7 @@ Status: `[ ]` todo · `[~]` wip · `[x]` done · `[!]` blocker
 - [ ] `pnpm dev` starts without errors (Vite + Electron both boot)
 - [ ] URL analyze: YouTube → routes to yt-dlp
 - [ ] URL analyze: Spotify → routes to spotdl
-- [ ] URL analyze: Bilibili → routes to annie or lux (whichever is installed)
+- [ ] URL analyze: Bilibili → routes to lux
 - [ ] URL analyze: DeviantArt → routes to gallery-dl
 - [ ] Download: yt-dlp video completes, file appears in folder
 - [ ] Download: progress bar updates in real time
@@ -39,8 +39,6 @@ Status: `[ ]` todo · `[~]` wip · `[x]` done · `[!]` blocker
 - [ ] Plugins tab: toggle disable yt-dlp → analyze any URL → still uses yt-dlp (it's hardcoded fallback — document this edge case)
 - [ ] Plugins tab: import a valid .js plugin → appears in plugin list after import
 - [ ] Plugins tab: import invalid .js → error shown, no crash
-- [ ] AI Discover: Ollama not running → graceful error banner (not crash)
-- [ ] AI Discover: valid query → results list rendered, click Analyze → switches to Download tab
 - [ ] Settings: save → reopen app → values persist (read from config.json)
 - [ ] External plugin in `<userData>/plugins/` → auto-loads on next app start
 
@@ -49,11 +47,9 @@ Status: `[ ]` todo · `[~]` wip · `[x]` done · `[!]` blocker
 ## 🐛 Known Issues / Edge Cases
 
 - [ ] yt-dlp can't truly be "disabled" since it's the hardcoded fallback in `getDownloaderForUrl` — decide: throw error or keep silent fallback
-- [ ] Annie and Lux handle overlapping sites — priority is Annie first (annie appears before lux in BUILTIN_PLUGINS) — confirm this is correct ordering
-- [ ] Ollama plugin: `curl` dependency for `checkDependency` — fails if curl not in PATH; replace with Node.js `http.get`
 - [ ] `gallery-dl`: progress reporting is count-based (`#0042`), not percent — progress bar stays at 0% during download; UI should handle this case
 - [ ] `spotdl`: `getInfo` returns a stub (no real metadata) because spotdl has no info-only mode — thumbnail always empty
-- [ ] `startDownload` progress regex on stderr — lux/annie write progress to stderr, stdout is JSON; verify both streams are parsed
+- [ ] `startDownload` progress regex on stderr — lux writes progress to stderr, stdout is JSON; verify both streams are parsed
 - [ ] `App.jsx`: `disabledPlugins` state initialized to `[]` but never loaded from config on mount — toggle state resets on reload
 - [ ] Window width (1200px) added but `electron-builder` `build.files` doesn't include `electron/plugin-manager.js` — verify packaged build resolves module
 
@@ -75,13 +71,6 @@ Status: `[ ]` todo · `[~]` wip · `[x]` done · `[!]` blocker
 - [ ] `Cobalt` plugin — cobalt.tools API wrapper (Twitter, TikTok, YouTube Shorts)
 - [ ] `PixelDrain` / `GoFile` plugin — file hosting sites
 - [ ] Batch input — paste newline-separated URLs, each queued with correct plugin
-
-### AI Discover
-- [ ] Model picker dropdown (list models from `ollama/api/tags` dynamically)
-- [ ] Search history — save past queries and results locally
-- [ ] Direct yt-dlp search passthrough — `ytsearch5:query` without Ollama, for when Ollama is offline
-- [ ] Result thumbnails — fetch preview images for suggestions
-- [ ] Save result as watchlist — queue multiple suggestions at once
 
 ### Download Queue
 - [ ] Concurrency limiter — honor `config.maxConcurrent` (currently ignored)

@@ -10,7 +10,7 @@ const HANDLED_SITES = [
 module.exports = {
   id: 'lux',
   name: 'Lux',
-  description: 'Fast media downloader (Annie successor) for Bilibili, Douyin, and more',
+  description: 'Fast media downloader for Bilibili, Douyin, Kuaishou, and more',
   type: 'downloader',
   icon: '⚡',
   repoUrl: 'https://github.com/iawia002/lux',

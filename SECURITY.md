@@ -41,7 +41,7 @@ Report vulnerabilities privately via one of these channels:
 
 ### Out of scope
 
-- Vulnerabilities in third-party tools (yt-dlp, ffmpeg, Annie, Lux, gallery-dl, spotDL, Ollama) — report these to their respective projects
+- Vulnerabilities in third-party tools (yt-dlp, ffmpeg, Lux, gallery-dl, spotDL) — report these to their respective projects
 - Issues that require physical access to the machine
 - Social engineering
 

@@ -90,7 +90,7 @@ Every plugin is a CommonJS module (`module.exports = { ... }`) with these fields
 }
 ```
 
-**SearchResult shape (Ollama):**
+**SearchResult shape:**
 ```js
 { title: string, searchQuery: string, description: string, type: 'video' | 'audio' }
 ```
@@ -109,7 +109,7 @@ Every plugin is a CommonJS module (`module.exports = { ... }`) with these fields
 
 ### Plugin Loading Order
 
-1. Built-in plugins registered at module load time (ordered: spotdl → gallery-dl → annie → lux → yt-dlp)
+1. Built-in plugins registered at module load time (ordered: spotdl → gallery-dl → lux → yt-dlp)
 2. External plugins from `<userData>/plugins/` loaded in `initPlugins()` at window creation
 3. User-imported plugins via IPC `browse-plugin-file` → `loadPluginFile`
 
@@ -143,7 +143,6 @@ All IPC is invoked via `window.api` in the renderer.
 | `importPluginFile(path)` | `path: string` | `Promise<{id, success, error}>` | Load plugin from path |
 | `browsePluginFile()` | — | `Promise<{id, success, error} \| null>` | File picker + load |
 | `openPluginsDir()` | — | `Promise<string>` | Open `<userData>/plugins/` |
-| `ollamaSearch(query)` | `query: string` | `Promise<{results}>` | AI content discovery |
 
 ### IPC Events (push from main → renderer)
 
@@ -168,11 +167,9 @@ window.api.onDownloadError(({ downloadId, status, error }) => {})
   "disabledPlugins": [],
   "externalPluginsDir": "<userData>/plugins",
   "plugins": {
-    "annie":       { "anniePath": "annie", "annieCookie": "" },
     "lux":         { "luxPath": "lux", "luxMultiThread": false },
     "gallery-dl":  { "galleryDlPath": "gallery-dl", "galleryDlCookies": "" },
-    "spotdl":      { "spotdlPath": "spotdl", "spotdlFormat": "mp3", "spotdlBitrate": "320k" },
-    "ollama":      { "ollamaHost": "http://localhost:11434", "ollamaModel": "llama3" }
+    "spotdl":      { "spotdlPath": "spotdl", "spotdlFormat": "mp3", "spotdlBitrate": "320k" }
   }
 }
 ```

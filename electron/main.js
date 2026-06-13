@@ -129,13 +129,6 @@ ipcMain.handle('get-video-info', async (event, url) => {
   return result;
 });
 
-// Ollama AI discovery search
-ipcMain.handle('ollama-search', async (event, query) => {
-  const ollamaPlugin = pluginManager.getPlugin('ollama');
-  const cfg = pluginManager.getPluginConfig('ollama', config);
-  return ollamaPlugin.search(query, cfg);
-});
-
 // Get plugin-specific settings
 ipcMain.handle('get-plugin-configs', () => {
   return config.plugins || {};

@@ -26,7 +26,7 @@ Subject to the conditions in the MIT License.
 
 ## 3. Third-Party Tools
 
-XtractForge is a graphical interface that invokes third-party command-line tools (yt-dlp, Annie, Lux, gallery-dl, spotDL, Ollama, ffmpeg, and others). These tools are:
+XtractForge is a graphical interface that invokes third-party command-line tools (yt-dlp, Lux, gallery-dl, spotDL, ffmpeg, and others). These tools are:
 
 - Not bundled with XtractForge unless explicitly stated
 - Governed by their own licenses and terms of service

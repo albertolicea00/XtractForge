@@ -11,11 +11,9 @@ These ship with every XtractForge install. Enable or disable them from the **Plu
 | Plugin | Type | Supported Sites | Repo |
 |---|---|---|---|
 | ![yt-dlp](https://img.shields.io/badge/yt--dlp-downloader-FF0000?logo=youtube&logoColor=white) | Downloader | YouTube, Vimeo, Twitter/X, TikTok, Twitch, SoundCloud, 1000+ | [yt-dlp/yt-dlp](https://github.com/yt-dlp/yt-dlp) |
-| ![Annie](https://img.shields.io/badge/Annie-downloader-orange) | Downloader | Bilibili, Youku, iQiyi, Weibo, Douyin | [iawia002/annie](https://github.com/iawia002/annie) |
-| ![Lux](https://img.shields.io/badge/Lux-downloader-blueviolet) | Downloader | Bilibili, Douyin, Kuaishou + all Annie sites | [iawia002/lux](https://github.com/iawia002/lux) |
+| ![Lux](https://img.shields.io/badge/Lux-downloader-blueviolet) | Downloader | Bilibili, Douyin, Kuaishou, Weibo, and more | [iawia002/lux](https://github.com/iawia002/lux) |
 | ![gallery-dl](https://img.shields.io/badge/gallery--dl-downloader-blue) | Downloader | DeviantArt, Pixiv, Reddit, Instagram, Danbooru, 200+ image galleries | [mikf/gallery-dl](https://github.com/mikf/gallery-dl) |
 | ![spotDL](https://img.shields.io/badge/spotDL-downloader-1DB954?logo=spotify&logoColor=white) | Downloader | Spotify tracks, albums, playlists (via YouTube Music) | [spotDL/spotify-downloader](https://github.com/spotDL/spotify-downloader) |
-| ![Ollama](https://img.shields.io/badge/Ollama-AI%20searcher-black) | Searcher | Local AI content discovery (requires Ollama running) | [ollama/ollama](https://github.com/ollama/ollama) |
 
 XtractForge auto-detects which plugin to use based on the URL. **yt-dlp is the fallback** for anything not handled by a more specific plugin.
 
@@ -33,13 +31,8 @@ pip install gallery-dl
 # spotDL — Spotify
 pip install spotdl
 
-# Annie / Lux — Asian platforms
-brew install annie
+# Lux — Asian platforms
 brew install lux
-
-# Ollama — AI discovery
-# Download from https://ollama.com then pull a model:
-ollama pull llama3
 ```
 
 Missing tools are shown in the Plugins tab with install hints — you only need what you plan to use.

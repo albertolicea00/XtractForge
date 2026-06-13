@@ -23,9 +23,6 @@ contextBridge.exposeInMainWorld('api', {
   browsePluginFile: () => ipcRenderer.invoke('browse-plugin-file'),
   openPluginsDir: () => ipcRenderer.invoke('open-plugins-dir'),
 
-  // Ollama AI discovery
-  ollamaSearch: (query) => ipcRenderer.invoke('ollama-search', query),
-
   // Download event listeners
   onDownloadProgress: (callback) => {
     const sub = (event, data) => callback(data);

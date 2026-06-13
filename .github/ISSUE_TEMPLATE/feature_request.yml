@@ -14,7 +14,6 @@ body:
       options:
         - New plugin / tool support
         - Download queue
-        - AI Discover (Ollama)
         - Plugin management
         - Settings / configuration
         - UI / UX

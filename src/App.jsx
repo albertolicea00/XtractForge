@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   Download, ListOrdered, Settings as SettingsIcon, Folder, Play,
-  CheckCircle2, AlertTriangle, Trash2, Sliders, Search, Sparkles,
+  CheckCircle2, AlertTriangle, Trash2, Sliders, Search,
   Clock, User, FileVideo, Music, XCircle, ExternalLink, ChevronRight,
   RefreshCw, HardDrive, Puzzle, Zap, ToggleLeft, ToggleRight,
-  UploadCloud, FolderOpen, Bot,
+  UploadCloud, FolderOpen,
 } from 'lucide-react';
 
 // ─── helpers ────────────────────────────────────────────────────────────────
@@ -74,12 +74,6 @@ export default function App() {
 
   // Plugin-specific configs: { [pluginId]: { ...keys } }
   const [pluginConfigs, setPluginConfigs] = useState({});
-
-  // Ollama discover
-  const [discoverQuery, setDiscoverQuery] = useState('');
-  const [discoverResults, setDiscoverResults] = useState([]);
-  const [discoverLoading, setDiscoverLoading] = useState(false);
-  const [discoverError, setDiscoverError] = useState(null);
 
   // Import plugin feedback
   const [importResult, setImportResult] = useState(null);
@@ -231,24 +225,6 @@ export default function App() {
     if (folder) setSettings(prev => ({ ...prev, downloadFolder: folder }));
   };
 
-  // ── Ollama Discover tab ───────────────────────────────────────────────────
-
-  const handleDiscover = async (e) => {
-    if (e) e.preventDefault();
-    if (!discoverQuery.trim()) return;
-    setDiscoverLoading(true);
-    setDiscoverError(null);
-    setDiscoverResults([]);
-    try {
-      const res = await window.api.ollamaSearch(discoverQuery.trim());
-      setDiscoverResults(res.results || []);
-    } catch (err) {
-      setDiscoverError(err.message || 'Ollama search failed.');
-    } finally {
-      setDiscoverLoading(false);
-    }
-  };
-
   // ── Plugin management ─────────────────────────────────────────────────────
 
   const handleTogglePlugin = async (pluginId, currentlyEnabled) => {
@@ -300,7 +276,6 @@ export default function App() {
           {[
             { id: 'download', icon: <Download />, label: 'Download' },
             { id: 'queue', icon: <ListOrdered />, label: `Queue (${queue.length})` },
-            { id: 'discover', icon: <Bot />, label: 'AI Discover' },
             { id: 'plugins', icon: <Puzzle />, label: 'Plugins' },
             { id: 'settings', icon: <SettingsIcon />, label: 'Settings' },
           ].map(({ id, icon, label }) => (
@@ -622,100 +597,6 @@ export default function App() {
                     </div>
                   </div>
                 ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* ── TAB: AI Discover ────────────────────────────────────────────── */}
-        {activeTab === 'discover' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            <div className="glass-card">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-                <Bot size={22} style={{ color: 'var(--primary)' }} />
-                <h2 style={{ fontSize: '18px', fontWeight: 600 }}>AI Content Discovery</h2>
-                {pluginStatus['ollama'] && (
-                  <span style={{ marginLeft: 'auto', fontSize: '11px', color: pluginStatus['ollama'].available ? 'var(--text-success)' : 'var(--text-muted)' }}>
-                    {pluginStatus['ollama'].available ? `● Ollama: ${pluginStatus['ollama'].version}` : '○ Ollama not running'}
-                  </span>
-                )}
-              </div>
-              <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '16px' }}>
-                Describe what you want to find. Ollama AI will suggest search queries — click any result to analyze and download it.
-              </p>
-
-              {!pluginStatus['ollama']?.available && (
-                <div className="error-banner" style={{ marginBottom: '16px' }}>
-                  <AlertTriangle size={18} />
-                  <div>
-                    <strong>Ollama not running</strong>
-                    <p style={{ fontSize: '12px', marginTop: '2px' }}>
-                      Install from <a href="#" onClick={() => {}} style={{ color: 'var(--primary)' }}>ollama.com</a>, then run <code>ollama pull llama3</code>. Configure host in Settings → Plugins.
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              <form onSubmit={handleDiscover}>
-                <div className="input-group">
-                  <label htmlFor="discover-input">What do you want to find?</label>
-                  <div className="input-container">
-                    <input
-                      id="discover-input"
-                      type="text"
-                      placeholder="e.g. relaxing lofi music, Python tutorials, nature documentaries..."
-                      value={discoverQuery}
-                      onChange={(e) => setDiscoverQuery(e.target.value)}
-                      disabled={discoverLoading}
-                    />
-                    <button type="submit" className="input-icon-btn" disabled={discoverLoading || !discoverQuery.trim()}>
-                      {discoverLoading ? <RefreshCw className="spinner" size={20} /> : <Search size={20} />}
-                    </button>
-                  </div>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                  <button type="submit" className="btn btn-primary" disabled={discoverLoading || !discoverQuery.trim()}>
-                    {discoverLoading ? <><RefreshCw className="spinner" size={16} /> Thinking...</> : <><Sparkles size={16} /> Discover</>}
-                  </button>
-                </div>
-              </form>
-            </div>
-
-            {discoverError && (
-              <div className="error-banner">
-                <AlertTriangle size={20} />
-                <div><strong>Discovery Error</strong><p style={{ marginTop: '4px', fontSize: '13px' }}>{discoverError}</p></div>
-              </div>
-            )}
-
-            {discoverResults.length > 0 && (
-              <div className="glass-card">
-                <h3 style={{ fontSize: '15px', fontWeight: 600, marginBottom: '16px' }}>
-                  <Sparkles size={16} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '6px', color: 'var(--primary)' }} />
-                  AI Suggestions
-                </h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  {discoverResults.map((result, i) => (
-                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '14px 16px', background: 'var(--bg-hover)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
-                      <div style={{ fontSize: '24px' }}>{result.type === 'audio' ? '🎵' : '▶️'}</div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontWeight: 600, fontSize: '14px', marginBottom: '2px' }}>{result.title}</div>
-                        <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '4px' }}>{result.description}</div>
-                        <code style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{result.searchQuery}</code>
-                      </div>
-                      <button
-                        className="btn btn-primary"
-                        style={{ padding: '8px 14px', fontSize: '13px', flexShrink: 0 }}
-                        onClick={() => {
-                          setActiveTab('download');
-                          handleAnalyze(null, result.searchQuery);
-                        }}
-                      >
-                        <Search size={14} /> Analyze
-                      </button>
-                    </div>
-                  ))}
-                </div>
               </div>
             )}
           </div>

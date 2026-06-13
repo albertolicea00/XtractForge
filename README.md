@@ -18,8 +18,6 @@
 
 **XtractForge** is a modern, open-source, cross-platform desktop app for downloading media from anywhere — YouTube, Spotify, Bilibili, DeviantArt, image galleries, and 1000+ more sites. Built on **Electron + React + Vite** with a **plugin architecture**: every downloader is a hot-swappable plugin. Enable what you need, disable what you don't, and import community-built plugins with one click.
 
-> 🤖 **AI-powered discovery** — describe what you want to find; a local Ollama model suggests content and hands you the download link.
-
 ---
 
 ## ✨ Features
@@ -27,7 +25,6 @@
 | | |
 |---|---|
 | 🔌 **Plugin system** | Enable/disable any tool; import community plugins as plain `.js` files |
-| 🤖 **AI Discover** | Describe what you want — Ollama AI suggests downloadable content |
 | 🎯 **Auto-detection** | Paste any URL; XtractForge picks the right plugin automatically |
 | 📊 **Download queue** | Real-time progress, speed, ETA, concurrent downloads, cancel |
 | 🎞️ **Format picker** | Quality presets, audio-only (MP3/M4A/WAV), or raw format selection |
@@ -43,11 +40,9 @@ XtractForge ships with these plugins out of the box:
 | Plugin | Supported Sites |
 |---|---|
 | ▶️ **yt-dlp** | YouTube, Vimeo, Twitter/X, TikTok, Twitch, SoundCloud, 1000+ |
-| 🎬 **Annie** | Bilibili, Youku, iQiyi, Weibo, Douyin |
-| ⚡ **Lux** | Bilibili, Douyin, Kuaishou + Annie's full site list |
+| ⚡ **Lux** | Bilibili, Douyin, Kuaishou, Weibo, and more |
 | 🖼️ **gallery-dl** | DeviantArt, Pixiv, Reddit, Instagram, Danbooru, 200+ image galleries |
 | 🎵 **spotDL** | Spotify tracks, albums, and playlists (via YouTube Music) |
-| 🤖 **Ollama AI** | Local AI content discovery (bring your own model) |
 
 → Full list, install instructions, and community plugin directory: **[ADDONS.md](ADDONS.md)**
 
@@ -119,8 +114,7 @@ After installing, grab the download tools you need from **[ADDONS.md](ADDONS.md)
 1. 🔗 **Paste a URL** in the Download tab — XtractForge picks the right plugin automatically
 2. 🎛️ **Choose quality** — video preset, audio-only, or pick a raw format
 3. ⬇️ **Click Download** — progress appears live in the Queue tab
-4. 🤖 **Discover content** — use the AI Discover tab to find content by description (requires Ollama)
-5. 🔌 **Manage plugins** — enable, disable, or import new plugins from the Plugins tab
+4. 🔌 **Manage plugins** — enable, disable, or import new plugins from the Plugins tab
 
 > 💡 Missing a tool? The Plugins tab shows which tools aren't installed, with one-line install commands.
 
@@ -169,6 +163,6 @@ XtractForge is released under the **[MIT License](LICENSE)**.
 
 By using this software you agree to the **[EULA](EULA.md)**. You are solely responsible for using it in compliance with applicable law and the terms of service of any site you access. The developers do not endorse piracy or copyright infringement.
 
-Third-party tools (yt-dlp, ffmpeg, Annie, Lux, gallery-dl, spotDL, Ollama) are not bundled and governed by their own licenses.
+Third-party tools (yt-dlp, ffmpeg, Lux, gallery-dl, spotDL) are not bundled and governed by their own licenses.
 
 🔐 Security vulnerabilities → **[SECURITY.md](SECURITY.md)**

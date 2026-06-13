@@ -5,13 +5,8 @@ const fs = require('fs');
 const BUILTIN_PLUGINS = [
   require('./plugins/spotdl'),
   require('./plugins/gallery-dl'),
-  require('./plugins/annie'),
   require('./plugins/lux'),
   require('./plugins/ytdlp'),
-];
-
-const BUILTIN_SEARCHERS = [
-  require('./plugins/ollama'),
 ];
 
 // Holds all loaded plugins (builtin + external) keyed by plugin.id
@@ -27,7 +22,7 @@ function _register(plugin) {
 }
 
 // Load built-ins into registry
-for (const p of [...BUILTIN_PLUGINS, ...BUILTIN_SEARCHERS]) {
+for (const p of BUILTIN_PLUGINS) {
   _register(p);
 }
 
@@ -82,7 +77,7 @@ function getDownloaderForUrl(url, disabledList = []) {
   const ordered = [
     ...BUILTIN_PLUGINS,
     // External downloaders after builtins but before yt-dlp fallback
-    ...[...registry.values()].filter(p => p.type === 'downloader' && !BUILTIN_PLUGINS.includes(p) && !BUILTIN_SEARCHERS.includes(p)),
+    ...[...registry.values()].filter(p => p.type === 'downloader' && !BUILTIN_PLUGINS.includes(p)),
   ];
 
   for (const plugin of ordered) {
@@ -123,7 +118,7 @@ function checkAllDependencies(globalConfig) {
       type: plugin.type,
       icon: plugin.icon || '🔌',
       configSchema: plugin.configSchema || [],
-      isBuiltin: BUILTIN_PLUGINS.includes(plugin) || BUILTIN_SEARCHERS.includes(plugin),
+      isBuiltin: BUILTIN_PLUGINS.includes(plugin),
     };
   }
   return result;
