@@ -4,6 +4,38 @@ Status: `[ ]` todo · `[~]` wip · `[x]` done · `[!]` blocker
 
 ---
 
+## 🚧 Active worklog (UI/UX overhaul)
+
+Done and pending items from the current redesign pass. Mark, don't delete.
+
+- [x] Remove Annie & Ollama; built-ins = yt-dlp, gallery-dl, spotDL, Lux
+- [x] Theme system (built-in + importable `.js` themes) with live apply
+- [x] Built-in themes: Cyber-Glass, Alexandria, Matrix, Dracula, Nord, Solarized Light
+- [x] OS-aware install commands per plugin + copy button
+- [x] Security warning for importing untrusted plugins
+- [x] Explicit plugin display order (yt-dlp → gallery-dl → spotDL → Lux); imports after
+- [x] Plugin repo as icon (opens browser) + per-plugin Settings button
+- [x] Plugins tab as card grid + per-plugin detail/settings page
+- [x] Per-plugin config moved out of general Settings; general Settings auto-saves
+- [x] Field help tooltips + plugin description in settings
+- [x] Persist & hydrate global settings + disabledPlugins (get-settings IPC)
+- [x] Exclude disabled plugins from "active tools"
+- [x] macOS draggable titlebar + no top clipping
+- [x] Download view redesigned as "Extract Anything" hero
+- [x] Fix Download view overflow (long save-to path, responsive grid)
+- [x] Queue: statuses (Extracting / Waiting / Paused / Completed / Failed)
+- [x] Queue: pause/resume, reorder, open folder, expandable live console output
+- [x] Queue: summary bar (counts, total speed, free disk)
+- [x] App icons for packaging + window + dev dock name/icon
+- [x] XtractForge Default theme (Nord + #34d399 + mono) as default
+- [x] Instant theme load (no flash) via cached CSS injected pre-mount
+- [ ] Extract: let user pick the extractor plugin (default = auto)
+- [ ] Visual consistency: Themes & Settings headers/footers match Plugins style
+- [ ] App version under sidebar title + update detection from GitHub
+- [ ] Language / i18n menu (app translations)
+
+---
+
 ## 🧪 Testing
 
 ### Unit tests (plugin logic)
