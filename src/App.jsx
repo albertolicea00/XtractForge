@@ -776,14 +776,14 @@ export default function App() {
                     )}
 
                     {/* Folder */}
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(255,255,255,0.02)', padding: '12px 16px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', marginTop: '8px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', overflow: 'hidden' }}>
-                        <Folder size={16} style={{ color: 'var(--primary)' }} />
-                        <span style={{ fontSize: '12px', color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', background: 'rgba(255,255,255,0.02)', padding: '12px 16px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', marginTop: '8px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, minWidth: 0 }}>
+                        <Folder size={16} style={{ color: 'var(--primary)', flexShrink: 0 }} />
+                        <span style={{ fontSize: '12px', color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', minWidth: 0 }} title={settings.downloadFolder || 'Not selected'}>
                           Save to: <strong>{settings.downloadFolder || 'Not selected'}</strong>
                         </span>
                       </div>
-                      <button onClick={handleSelectFolder} className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: '12px' }}>Change</button>
+                      <button onClick={handleSelectFolder} className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: '12px', flexShrink: 0 }}>Change</button>
                     </div>
 
                     {/* Download button */}
