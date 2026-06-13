@@ -26,7 +26,7 @@ module.exports = {
   checkDependency(config) {
     const bin = config.spotdlPath || 'spotdl';
     try {
-      const out = execSync(`"${bin}" --version 2>&1`, { encoding: 'utf8', timeout: 5000 });
+      const out = execSync(`"${bin}" --version 2>&1`, { encoding: 'utf8', timeout: 15000 });
       return { available: true, version: out.trim().split('\n')[0] };
     } catch {
       return { available: false, version: '' };

@@ -419,7 +419,7 @@ export default function App() {
   // ── Active plugins for sidebar ────────────────────────────────────────────
 
   const availableDownloaders = Object.entries(pluginStatus)
-    .filter(([, p]) => p.type === 'downloader' && p.available)
+    .filter(([id, p]) => p.type === 'downloader' && p.available && !disabledPlugins.includes(id))
     .map(([id, p]) => ({ id, ...p }));
 
   const downloaderPlugins = Object.entries(pluginStatus)
