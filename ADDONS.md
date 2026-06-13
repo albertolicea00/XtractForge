@@ -126,6 +126,9 @@ Themes are installed exactly like plugins — single `.js` files dropped in the 
 | 🟣 **Cyber-Glass** (default) | Dark | Glassmorphic dark utility, violet accents |
 | 📜 **Alexandria** | Light | Scholarly light editorial, warm gold accent |
 | 🟢 **Matrix** | Dark | High-contrast terminal, phosphor green, mono font |
+| 🧛 **Dracula** | Dark | Iconic deep slate with purple & pink |
+| ❄️ **Nord** | Dark | Arctic north-bluish frost palette |
+| ☀️ **Solarized Light** | Light | Warm cream surfaces with blue/cyan accents |
 
 From the Themes tab you can also override the accent color, tune glass intensity, and toggle a monospace UI font — these layer on top of any theme.
 

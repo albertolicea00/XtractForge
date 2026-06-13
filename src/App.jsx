@@ -935,7 +935,7 @@ export default function App() {
 
               {/* Visual Modes */}
               <h3 style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', margin: '24px 0 12px' }}>Visual Modes</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '16px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(168px, 1fr))', gap: '12px' }}>
                 {themes.map(theme => {
                   const active = theme.id === activeThemeId;
                   return (
@@ -954,31 +954,31 @@ export default function App() {
                       {/* Preview strip rendered from the theme's own colors */}
                       <div style={{
                         position: 'relative',
-                        height: '110px',
-                        padding: '14px',
+                        height: '64px',
+                        padding: '10px',
                         display: 'flex',
                         alignItems: 'flex-end',
-                        gap: '6px',
+                        gap: '5px',
                         background: theme.variables['--bg-dark'] || theme.variables['--bg-deep'] || '#0f0f13',
                         backgroundImage: theme.variables['--gradient-dark'] || 'none',
                       }}>
                         {active && (
-                          <div style={{ position: 'absolute', top: '10px', right: '10px', width: '22px', height: '22px', borderRadius: '50%', background: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <Check size={14} color="#fff" />
+                          <div style={{ position: 'absolute', top: '8px', right: '8px', width: '18px', height: '18px', borderRadius: '50%', background: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <Check size={12} color="#fff" />
                           </div>
                         )}
                         {(theme.swatches || []).map((c, i) => (
-                          <div key={i} style={{ width: '20px', height: '20px', borderRadius: '50%', background: c, border: '2px solid rgba(255,255,255,0.15)' }} />
+                          <div key={i} style={{ width: '15px', height: '15px', borderRadius: '50%', background: c, border: '2px solid rgba(255,255,255,0.15)' }} />
                         ))}
                       </div>
-                      <div style={{ padding: '12px 14px', background: 'var(--bg-hover)' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <span style={{ fontWeight: 600, fontSize: '14px' }}>{theme.name}</span>
+                      <div style={{ padding: '8px 10px 10px', background: 'var(--bg-hover)' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px', flexWrap: 'wrap' }}>
+                          <span style={{ fontWeight: 600, fontSize: '13px' }}>{theme.name}</span>
                           {theme.isBuiltin
-                            ? <span style={{ fontSize: '10px', padding: '1px 6px', background: 'rgba(139,92,246,0.15)', color: 'var(--primary)', borderRadius: '10px' }}>built-in</span>
-                            : <span style={{ fontSize: '10px', padding: '1px 6px', background: 'var(--bg-input)', color: 'var(--text-muted)', borderRadius: '10px' }}>{theme.author || 'community'}</span>}
+                            ? <span style={{ fontSize: '9px', padding: '1px 5px', background: 'rgba(139,92,246,0.15)', color: 'var(--primary)', borderRadius: '10px' }}>built-in</span>
+                            : <span style={{ fontSize: '9px', padding: '1px 5px', background: 'var(--bg-input)', color: 'var(--text-muted)', borderRadius: '10px' }}>{theme.author || 'community'}</span>}
                         </div>
-                        <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px' }}>{theme.description}</div>
+                        <div style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '2px', lineHeight: 1.3 }}>{theme.description}</div>
                       </div>
                     </div>
                   );

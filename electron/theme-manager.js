@@ -6,6 +6,9 @@ const BUILTIN_THEMES = [
   require('./themes/cyber-glass'),
   require('./themes/alexandria'),
   require('./themes/matrix'),
+  require('./themes/dracula'),
+  require('./themes/nord'),
+  require('./themes/solarized-light'),
 ];
 
 // All loaded themes (builtin + external) keyed by theme.id, insertion-ordered.
