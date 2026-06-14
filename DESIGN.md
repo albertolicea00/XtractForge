@@ -42,3 +42,10 @@ Theme management is handled through a dedicated **Theme Selector** menu, separat
 1. **Transparency**: Real-time status for all system components.
 2. **Modular Sovereignty**: Plugins are first-class citizens with individual markers.
 3. **Power-User Efficiency**: Keyboard-friendly inputs and high-density technical metadata.
+
+## Code Structure
+- `App.jsx` is a thin **shell**: owns state/handlers/effects, renders `Sidebar` + the active tab.
+- Each view is its own component under `src/components/` (`Sidebar`, `tabs/{Download,Queue,Plugins,Themes,Settings}Tab`).
+- Pure, framework-free logic lives in `src/lib/` (`format`, `theme`, `plugins`, `queue`) and is unit-tested.
+- Themes and plugins are single `.js` files (built-in under `electron/{themes,plugins}/`, community-importable).
+- Tests: `tests/` (Vitest) — run `pnpm test` / `pnpm test:watch`. See [AGENTS.md](AGENTS.md) for the full map.
