@@ -26,6 +26,8 @@ let config = {
   disabledPlugins: [],
   // Directory where user-installed external plugin .js files are stored
   externalPluginsDir: path.join(app.getPath('userData'), 'plugins'),
+  // Localization
+  language: 'en',
   // Updates
   autoCheckUpdates: true,
   // Theming
@@ -165,6 +167,7 @@ ipcMain.handle('get-settings', () => ({
   sponsorBlock: !!config.sponsorBlock,
   disabledPlugins: config.disabledPlugins || [],
   autoCheckUpdates: config.autoCheckUpdates !== false,
+  language: config.language || 'en',
 }));
 
 // Current app version

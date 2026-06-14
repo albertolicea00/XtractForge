@@ -29,10 +29,12 @@ Done and pending items from the current redesign pass. Mark, don't delete.
 - [x] App icons for packaging + window + dev dock name/icon
 - [x] XtractForge Default theme (Nord + #34d399 + mono) as default
 - [x] Instant theme load (no flash) via cached CSS injected pre-mount
-- [ ] Extract: let user pick the extractor plugin (default = auto)
-- [ ] Visual consistency: Themes & Settings headers/footers match Plugins style
-- [ ] App version under sidebar title + update detection from GitHub
-- [ ] Language / i18n menu (app translations)
+- [x] Extract: let user pick the extractor plugin (default = auto)
+- [x] Visual consistency: Themes & Settings headers/footers match Plugins style
+- [x] App version under sidebar title + update detection from GitHub
+- [x] Language / i18n menu (en/es) — infra + nav/headers translated
+- [ ] i18n: translate remaining strings (settings bodies, plugin/queue/theme detail, buttons)
+- [ ] Auto-download/install updates (electron-updater) — currently detect + link only
 
 ---
 

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { LANGUAGES, makeT } from './i18n';
 import {
   Download, ListOrdered, Settings as SettingsIcon, Folder, Play,
   CheckCircle2, AlertTriangle, Trash2, Sliders, Search,
@@ -204,6 +205,10 @@ export default function App() {
   // Scroll container for the main content area
   const mainRef = useRef(null);
 
+  // Language
+  const [language, setLanguage] = useState('en');
+  const t = makeT(language);
+
   // Updates
   const [appVersion, setAppVersion] = useState('');
   const [autoCheckUpdates, setAutoCheckUpdates] = useState(true);
@@ -237,6 +242,7 @@ export default function App() {
         }));
         setDisabledPlugins(saved.disabledPlugins || []);
         if (typeof saved.autoCheckUpdates === 'boolean') setAutoCheckUpdates(saved.autoCheckUpdates);
+        if (saved.language) setLanguage(saved.language);
       }
     } catch (err) {
       console.error('Failed to check dependencies:', err);
@@ -271,6 +277,11 @@ export default function App() {
   const handleToggleAutoUpdates = (val) => {
     setAutoCheckUpdates(val);
     window.api.saveSettings({ autoCheckUpdates: val });
+  };
+
+  const handleSetLanguage = (lang) => {
+    setLanguage(lang);
+    window.api.saveSettings({ language: lang });
   };
 
   // Load version on mount, and auto-check for updates if enabled
@@ -573,11 +584,11 @@ export default function App() {
 
         <ul className="nav-links">
           {[
-            { id: 'download', icon: <Download />, label: 'Download' },
-            { id: 'queue', icon: <ListOrdered />, label: `Queue (${queue.length})` },
-            { id: 'plugins', icon: <Puzzle />, label: 'Plugins' },
-            { id: 'themes', icon: <Palette />, label: 'Themes' },
-            { id: 'settings', icon: <SettingsIcon />, label: 'Settings' },
+            { id: 'download', icon: <Download />, label: t('nav.download') },
+            { id: 'queue', icon: <ListOrdered />, label: `${t('nav.queue')} (${queue.length})` },
+            { id: 'plugins', icon: <Puzzle />, label: t('nav.plugins') },
+            { id: 'themes', icon: <Palette />, label: t('nav.themes') },
+            { id: 'settings', icon: <SettingsIcon />, label: t('nav.settings') },
           ].map(({ id, icon, label }) => (
             <li
               key={id}
@@ -628,9 +639,9 @@ export default function App() {
         {activeTab === 'download' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <div className="glass-card" style={{ padding: '56px 32px', textAlign: 'center' }}>
-              <h1 style={{ fontSize: '46px', fontWeight: 800, letterSpacing: '-1.5px', lineHeight: 1.05 }}>Extract Anything.</h1>
+              <h1 style={{ fontSize: '46px', fontWeight: 800, letterSpacing: '-1.5px', lineHeight: 1.05 }}>{t('download.title')}</h1>
               <p style={{ fontSize: '15px', color: 'var(--text-secondary)', marginTop: '12px' }}>
-                Paste a URL to start media extraction — XtractForge auto-detects the right tool.
+                {t('download.subtitle')}
               </p>
 
               <form onSubmit={handleAnalyze} style={{ maxWidth: '680px', margin: '28px auto 0' }}>
@@ -645,19 +656,19 @@ export default function App() {
                     style={{ flex: 1, minWidth: 0, background: 'none', border: 'none', outline: 'none', color: 'var(--text-primary)', fontFamily: 'var(--font-sans)', fontSize: '16px' }}
                   />
                   <button type="submit" className="btn btn-primary" disabled={analyzing || !url.trim()} style={{ flexShrink: 0, fontSize: '15px', padding: '12px 28px' }}>
-                    {analyzing ? <><RefreshCw className="spinner" size={16} /> Extracting…</> : <>Extract</>}
+                    {analyzing ? <><RefreshCw className="spinner" size={16} /> {t('download.extracting')}</> : <>{t('download.extract')}</>}
                   </button>
                 </div>
 
                 {/* Engine picker — default Auto lets XtractForge choose the best tool */}
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginTop: '14px' }}>
-                  <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Engine</span>
+                  <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{t('download.engine')}</span>
                   <select
                     value={chosenEngine}
                     onChange={(e) => setChosenEngine(e.target.value)}
                     style={{ background: 'var(--bg-input)', color: 'var(--text-primary)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '6px 10px', fontFamily: 'var(--font-sans)', fontSize: '13px', outline: 'none', cursor: 'pointer' }}
                   >
-                    <option value="auto">Auto-detect (recommended)</option>
+                    <option value="auto">{t('download.autoDetect')}</option>
                     {downloaderPlugins.filter(([id]) => !disabledPlugins.includes(id)).map(([id, p]) => (
                       <option key={id} value={id}>{p.name}</option>
                     ))}
@@ -864,8 +875,8 @@ export default function App() {
           <div className="glass-card">
             <div className="queue-header">
               <div>
-                <h2 style={{ fontSize: '18px', fontWeight: 600 }}>Download Queue</h2>
-                <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginTop: '2px' }}>Active downloads and history.</p>
+                <h2 style={{ fontSize: '18px', fontWeight: 600 }}>{t('queue.title')}</h2>
+                <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginTop: '2px' }}>{t('queue.subtitle')}</p>
               </div>
               {queue.some(i => i.status === 'completed') && (
                 <button onClick={() => setQueue(prev => prev.filter(i => i.status !== 'completed'))} className="btn btn-secondary" style={{ padding: '8px 14px', fontSize: '13px' }}>
@@ -985,10 +996,10 @@ export default function App() {
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
               <div>
                 <h2 style={{ fontSize: '22px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <Puzzle size={22} style={{ color: 'var(--primary)' }} /> Plugins
+                  <Puzzle size={22} style={{ color: 'var(--primary)' }} /> {t('plugins.title')}
                 </h2>
                 <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginTop: '6px', maxWidth: '520px', lineHeight: 1.5 }}>
-                  Manage and configure your extraction engines. Enable what you need, or import community-built modules.
+                  {t('plugins.subtitle')}
                 </p>
               </div>
               <div style={{ display: 'flex', gap: '10px' }}>
@@ -1202,10 +1213,10 @@ export default function App() {
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
               <div>
                 <h2 style={{ fontSize: '22px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <Palette size={22} style={{ color: 'var(--primary)' }} /> Themes
+                  <Palette size={22} style={{ color: 'var(--primary)' }} /> {t('themes.title')}
                 </h2>
                 <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginTop: '6px', maxWidth: '520px', lineHeight: 1.5 }}>
-                  Personalize your workspace. Import community themes (.js files exporting CSS variables).
+                  {t('themes.subtitle')}
                 </p>
               </div>
               <div style={{ display: 'flex', gap: '10px' }}>
@@ -1373,10 +1384,10 @@ export default function App() {
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
               <div>
                 <h2 style={{ fontSize: '22px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <SettingsIcon size={22} style={{ color: 'var(--primary)' }} /> Settings
+                  <SettingsIcon size={22} style={{ color: 'var(--primary)' }} /> {t('settings.title')}
                 </h2>
                 <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginTop: '6px', maxWidth: '520px', lineHeight: 1.5 }}>
-                  App-wide defaults. Changes are saved automatically.
+                  {t('settings.subtitle')}
                 </p>
               </div>
               {savedFlash === 'global' && (
@@ -1402,6 +1413,14 @@ export default function App() {
                   <div className="input-group" style={{ marginBottom: 0 }}>
                     <label>Download Speed Limit</label>
                     <input type="text" placeholder="50K, 10M (empty = unlimited)" value={settings.speedLimit} onChange={(e) => updateSetting({ speedLimit: e.target.value })} style={{ padding: '12px', background: 'var(--bg-input)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', color: 'var(--text-primary)', fontFamily: 'var(--font-sans)', fontSize: '13px', outline: 'none' }} />
+                  </div>
+
+                  <div className="input-group" style={{ marginBottom: 0 }}>
+                    <label>{t('settings.language')}</label>
+                    <select value={language} onChange={(e) => handleSetLanguage(e.target.value)} style={{ padding: '12px', background: 'var(--bg-input)', color: 'var(--text-primary)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', outline: 'none', fontFamily: 'var(--font-sans)', fontSize: '13px' }}>
+                      {LANGUAGES.map(l => <option key={l.code} value={l.code}>{l.label}</option>)}
+                    </select>
+                    <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{t('settings.languageDesc')}</span>
                   </div>
                 </div>
 
