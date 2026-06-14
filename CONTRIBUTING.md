@@ -56,6 +56,21 @@ pnpm package:win     # Windows NSIS
 pnpm package:linux   # Linux AppImage + deb
 ```
 
+### Tests
+
+```bash
+pnpm test            # run the suite once (Vitest)
+pnpm test:watch      # re-run on every change while developing
+```
+
+Tests live in [`tests/`](tests/) and cover the pure logic — formatting/theme/plugin
+helpers (`src/lib/`), each built-in plugin (`canHandle`, `parseProgress`,
+`buildDownloadArgs`, schema validity), and the plugin/theme managers (URL routing,
+registry, config merge). They run in Node (no DOM), so they're fast.
+
+**Run `pnpm test` before opening a PR.** Add or update tests when you change plugin
+routing, a helper, or a manager — keep regressions out.
+
 ---
 
 ## Project Structure
@@ -113,7 +128,7 @@ To share a community plugin without modifying core:
 
 2. **Make changes** — keep commits focused and atomic
 
-3. **Test manually** — run `pnpm dev` and verify your change works on your OS
+3. **Test** — run `pnpm test` (and add tests for new logic), then `pnpm dev` to verify on your OS
 
 4. **Update docs** — if you added a feature, update README, ADDONS.md, or AGENTS.md as needed; if you added a TODO entry it's done, remove it from TODO.md
 
@@ -121,6 +136,7 @@ To share a community plugin without modifying core:
 
 ### PR checklist
 
+- [ ] `pnpm test` passes (added/updated tests for changed logic)
 - [ ] Tested on my OS with `pnpm dev`
 - [ ] No new `console.error` left unhandled
 - [ ] Docs updated if applicable
