@@ -21,6 +21,21 @@ module.exports = {
     linux: 'pipx install yt-dlp',
     default: 'pip install yt-dlp',
   },
+  // Per-language overrides for this plugin's own text. English lives in the base
+  // fields above; add a language block to translate. Fields keyed by configSchema key.
+  locales: {
+    es: {
+      tag: 'Motor principal',
+      description: 'Descarga de YouTube, Vimeo, Twitter/X, TikTok y más de 1000 sitios',
+      fields: {
+        ytdlpPath: { label: 'Ruta del binario yt-dlp', help: "Ruta al ejecutable de yt-dlp. Déjalo como 'yt-dlp' si está en el PATH." },
+        ffmpegPath: { label: 'Ruta del binario ffmpeg', help: 'Ruta a ffmpeg, usado para unir video+audio y convertir formatos.' },
+        embedSubtitles: { label: 'Incrustar subtítulos', help: 'Descarga los subtítulos disponibles y los incrusta en el video.' },
+        sponsorBlock: { label: 'SponsorBlock', help: 'Omite segmentos de patrocinio/intro/outro en YouTube usando SponsorBlock.' },
+        speedLimit: { label: 'Límite de velocidad', help: 'Limita la velocidad, ej. 50K o 10M. Vacío = sin límite.' },
+      },
+    },
+  },
 
   configSchema: [
     { key: 'ytdlpPath', label: 'yt-dlp binary path', type: 'text', default: 'yt-dlp', placeholder: '/usr/local/bin/yt-dlp', help: "Path to the yt-dlp executable. Leave as 'yt-dlp' if it's on your PATH." },

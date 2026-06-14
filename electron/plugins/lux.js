@@ -23,6 +23,17 @@ module.exports = {
     linux: 'go install github.com/iawia002/lux@latest',
     default: 'go install github.com/iawia002/lux@latest',
   },
+  locales: {
+    es: {
+      tag: 'Sitios asiáticos',
+      description: 'Descargador rápido para Bilibili, Douyin, Kuaishou y más',
+      fields: {
+        luxPath: { label: 'Ruta del binario lux', help: 'Ruta al ejecutable de lux. Déjalo por defecto si está en el PATH.' },
+        luxCookie: { label: 'Cookie (opcional)', help: 'Cookie para sitios que requieren inicio de sesión.' },
+        luxMultiThread: { label: 'Descarga multihilo', help: 'Descarga con varios hilos para más velocidad. Algunos sitios la rechazan.' },
+      },
+    },
+  },
 
   configSchema: [
     { key: 'luxPath', label: 'lux binary path', type: 'text', default: 'lux', placeholder: '/usr/local/bin/lux', help: "Path to the lux executable. Leave as default if it's on your PATH." },

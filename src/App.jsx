@@ -138,6 +138,23 @@ function applyTheme(theme, settings) {
 
 const ACCENT_PRESETS = ['#adc6ff', '#ff8a80', '#34d399', '#c4b5fd', '#fbbf24'];
 
+// Overlay a plugin's own per-language strings (plugin.locales[lang]) onto its
+// base (English) fields, so plugin-provided text is translated too.
+function localizePlugin(p, lang) {
+  const loc = p && p.locales && p.locales[lang];
+  if (!loc) return p;
+  return {
+    ...p,
+    description: loc.description ?? p.description,
+    tag: loc.tag ?? p.tag,
+    installHint: loc.installHint ?? p.installHint,
+    configSchema: (p.configSchema || []).map(f => {
+      const lf = loc.fields && loc.fields[f.key];
+      return lf ? { ...f, label: lf.label ?? f.label, help: lf.help ?? f.help } : f;
+    }),
+  };
+}
+
 // Pick the OS-appropriate install command for a plugin, falling back to the
 // generic installHint. plugin.install is an optional { darwin, win32, linux, default } map.
 function resolveInstall(plugin, platform) {
@@ -1037,7 +1054,8 @@ export default function App() {
 
             {/* Plugin cards — built-ins by `order`, imported ones in import order after */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px' }}>
-              {downloaderPlugins.map(([id, plugin]) => {
+              {downloaderPlugins.map(([id, rawPlugin]) => {
+                const plugin = localizePlugin(rawPlugin, language);
                 const enabled = !disabledPlugins.includes(id);
                 return (
                   <div key={id} className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '14px', opacity: enabled ? 1 : 0.55, transition: 'var(--transition-fast)' }}>
@@ -1099,7 +1117,7 @@ export default function App() {
         {/* ── Plugin detail / settings page ───────────────────────────────── */}
         {activeTab === 'plugins' && selectedPlugin && pluginStatus[selectedPlugin] && (() => {
           const id = selectedPlugin;
-          const plugin = pluginStatus[id];
+          const plugin = localizePlugin(pluginStatus[id], language);
           const enabled = !disabledPlugins.includes(id);
           const cfg = pluginConfigs[id] || {};
           const installCmd = !plugin.available ? resolveInstall(plugin, window.api.platform) : '';

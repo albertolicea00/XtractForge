@@ -24,6 +24,17 @@ module.exports = {
     linux: 'pipx install gallery-dl',
     default: 'pip install gallery-dl',
   },
+  locales: {
+    es: {
+      tag: 'Imágenes',
+      description: 'Descarga galerías de imágenes de DeviantArt, Pixiv, Reddit, Instagram y más',
+      fields: {
+        galleryDlPath: { label: 'Ruta del binario gallery-dl', help: 'Ruta al ejecutable de gallery-dl. Déjalo por defecto si está en el PATH.' },
+        galleryDlCookies: { label: 'Archivo de cookies (opcional)', help: 'Ruta a un cookies.txt. Necesario para sitios que requieren inicio de sesión.' },
+        galleryDlConfig: { label: 'Archivo de configuración (opcional)', help: 'Ruta a un archivo de configuración propio de gallery-dl para opciones avanzadas.' },
+      },
+    },
+  },
 
   configSchema: [
     { key: 'galleryDlPath', label: 'gallery-dl binary path', type: 'text', default: 'gallery-dl', placeholder: '/usr/local/bin/gallery-dl', help: "Path to the gallery-dl executable. Leave as default if it's on your PATH." },

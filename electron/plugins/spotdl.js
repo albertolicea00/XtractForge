@@ -17,6 +17,17 @@ module.exports = {
     linux: 'pipx install spotdl',
     default: 'pip install spotdl',
   },
+  locales: {
+    es: {
+      tag: 'Audio',
+      description: 'Descarga canciones, álbumes y playlists de Spotify como audio de alta calidad',
+      fields: {
+        spotdlPath: { label: 'Ruta del binario spotdl', help: 'Ruta al ejecutable de spotdl. Déjalo por defecto si está en el PATH.' },
+        spotdlFormat: { label: 'Formato de salida', help: 'Contenedor/códec de audio. FLAC/WAV son sin pérdida y más grandes.' },
+        spotdlBitrate: { label: 'Bitrate', help: 'Bitrate objetivo. Mayor = mejor calidad y archivos más grandes (se ignora en formatos sin pérdida).' },
+      },
+    },
+  },
 
   configSchema: [
     { key: 'spotdlPath', label: 'spotdl binary path', type: 'text', default: 'spotdl', placeholder: '/usr/local/bin/spotdl', help: "Path to the spotdl executable. Leave as default if it's on your PATH." },
