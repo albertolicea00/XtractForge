@@ -1161,38 +1161,39 @@ export default function App() {
         {/* ── TAB: Themes ─────────────────────────────────────────────────── */}
         {activeTab === 'themes' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            <div className="glass-card">
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+            {/* Header — matches the Plugins tab */}
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
+              <div>
+                <h2 style={{ fontSize: '22px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <Palette size={22} style={{ color: 'var(--primary)' }} /> Themes
+                </h2>
+                <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginTop: '6px', maxWidth: '520px', lineHeight: 1.5 }}>
+                  Personalize your workspace. Import community themes (.js files exporting CSS variables).
+                </p>
+              </div>
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <button className="btn btn-secondary" onClick={() => window.api.openThemesDir()} style={{ fontSize: '13px', padding: '8px 14px' }}>
+                  <FolderOpen size={14} /> Themes Folder
+                </button>
+                <button className="btn btn-primary" onClick={handleImportTheme} style={{ fontSize: '13px', padding: '8px 14px' }}>
+                  <UploadCloud size={14} /> Import Theme
+                </button>
+              </div>
+            </div>
+
+            {themeImportResult && (
+              <div className="error-banner" style={{ margin: 0, borderColor: themeImportResult.success ? 'var(--text-success)' : undefined }}>
+                {themeImportResult.success ? <CheckCircle2 size={18} style={{ color: 'var(--text-success)' }} /> : <AlertTriangle size={18} />}
                 <div>
-                  <h2 style={{ fontSize: '18px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Palette size={20} style={{ color: 'var(--primary)' }} /> Themes
-                  </h2>
-                  <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginTop: '4px' }}>
-                    Personalize your workspace. Import community themes (.js files exporting CSS variables).
-                  </p>
-                </div>
-                <div style={{ display: 'flex', gap: '10px' }}>
-                  <button className="btn btn-secondary" onClick={() => window.api.openThemesDir()} style={{ fontSize: '13px', padding: '8px 14px' }}>
-                    <FolderOpen size={14} /> Themes Folder
-                  </button>
-                  <button className="btn btn-primary" onClick={handleImportTheme} style={{ fontSize: '13px', padding: '8px 14px' }}>
-                    <UploadCloud size={14} /> Import Theme
-                  </button>
+                  <strong>{themeImportResult.success ? `Theme "${themeImportResult.id}" imported` : 'Import failed'}</strong>
+                  {!themeImportResult.success && <p style={{ fontSize: '12px', marginTop: '2px' }}>{themeImportResult.error}</p>}
                 </div>
               </div>
+            )}
 
-              {themeImportResult && (
-                <div className="error-banner" style={{ marginTop: '16px', marginBottom: 0, borderColor: themeImportResult.success ? 'var(--text-success)' : undefined }}>
-                  {themeImportResult.success ? <CheckCircle2 size={18} style={{ color: 'var(--text-success)' }} /> : <AlertTriangle size={18} />}
-                  <div>
-                    <strong>{themeImportResult.success ? `Theme "${themeImportResult.id}" imported` : 'Import failed'}</strong>
-                    {!themeImportResult.success && <p style={{ fontSize: '12px', marginTop: '2px' }}>{themeImportResult.error}</p>}
-                  </div>
-                </div>
-              )}
-
-              {/* Visual Modes */}
-              <h3 style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', margin: '24px 0 12px' }}>Visual Modes</h3>
+            {/* Visual Modes */}
+            <div className="glass-card">
+              <h3 style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', margin: '0 0 12px' }}>Visual Modes</h3>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(168px, 1fr))', gap: '12px' }}>
                 {themes.map(theme => {
                   const active = theme.id === activeThemeId;
@@ -1331,17 +1332,24 @@ export default function App() {
         {/* ── TAB: Settings ───────────────────────────────────────────────── */}
         {activeTab === 'settings' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            <div className="glass-card">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <h2 style={{ fontSize: '18px', fontWeight: 600 }}>Settings</h2>
-                {savedFlash === 'global' && (
-                  <span style={{ fontSize: '12px', color: 'var(--text-success)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                    <Check size={13} /> Saved
-                  </span>
-                )}
+            {/* Header — matches the Plugins tab */}
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
+              <div>
+                <h2 style={{ fontSize: '22px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <SettingsIcon size={22} style={{ color: 'var(--primary)' }} /> Settings
+                </h2>
+                <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginTop: '6px', maxWidth: '520px', lineHeight: 1.5 }}>
+                  App-wide defaults. Changes are saved automatically.
+                </p>
               </div>
-              <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginTop: '2px', marginBottom: '20px' }}>App-wide defaults. Changes are saved automatically.</p>
+              {savedFlash === 'global' && (
+                <span style={{ fontSize: '12px', color: 'var(--text-success)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                  <Check size={14} /> Saved
+                </span>
+              )}
+            </div>
 
+            <div className="glass-card">
               <div className="settings-grid">
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                   <h3 style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>System & Folders</h3>
