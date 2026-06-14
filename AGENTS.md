@@ -10,16 +10,25 @@ XtractForge runs on Electron's two-process model:
 
 **Main Process** (`electron/main.js`)
 - Full Node.js access: filesystem, child_process, IPC
-- Owns the plugin registry via `electron/plugin-manager.js`
+- Owns the plugin registry via `electron/plugin-manager.js` and theme registry via `electron/theme-manager.js`
 - Dispatches URL analysis and downloads to the appropriate plugin
 - Persists settings to `<userData>/config.json`
 
 **Renderer Process** (`src/`)
 - React + Vite, no direct Node.js access (contextIsolation: true)
 - Communicates exclusively via `window.api` (contextBridge)
+- Layout:
+  - `App.jsx` — shell: owns state/handlers/effects, renders `Sidebar` + the active tab
+  - `components/Sidebar.jsx`, `components/tabs/*Tab.jsx` — presentational; receive state + handlers as props
+  - `lib/` — pure, framework-free helpers (`format`, `theme`, `plugins`, `queue`); unit-tested
+  - `i18n.js` + `locales/<lang>.js` — translations (English fallback)
 
 **Preload Script** (`electron/preload.js`)
 - Exposes a typed subset of IPC as `window.api`
+
+**Tests** (`tests/`, Vitest)
+- Node-side unit tests for `src/lib/`, every built-in plugin (`canHandle`/`parseProgress`/`buildDownloadArgs`/schema), and the plugin & theme managers (routing, registry, config merge)
+- `pnpm test` (once) · `pnpm test:watch` (on change)
 
 ---
 
@@ -253,6 +262,8 @@ window.api.onDownloadError(({ downloadId, status, error }) => {})
 ```bash
 pnpm install      # Install deps
 pnpm dev          # Vite dev server + Electron (HMR)
+pnpm test         # Run the Vitest suite once
+pnpm test:watch   # Re-run tests on every change
 pnpm build        # Production React bundle → dist/
 pnpm package:mac  # Electron packager for macOS
 pnpm package:win  # Windows
