@@ -258,8 +258,11 @@ export default function App() {
   // Scroll container for the main content area
   const mainRef = useRef(null);
 
-  // Language
-  const [language, setLanguage] = useState('en');
+  // Language — lazy-init from localStorage so the first render uses the chosen
+  // language (no English flash before the async settings hydrate).
+  const [language, setLanguage] = useState(() => {
+    try { return localStorage.getItem('xf-lang') || 'en'; } catch { return 'en'; }
+  });
   const t = makeT(language);
 
   // Updates
@@ -295,7 +298,7 @@ export default function App() {
         }));
         setDisabledPlugins(saved.disabledPlugins || []);
         if (typeof saved.autoCheckUpdates === 'boolean') setAutoCheckUpdates(saved.autoCheckUpdates);
-        if (saved.language) setLanguage(saved.language);
+        if (saved.language) { setLanguage(saved.language); try { localStorage.setItem('xf-lang', saved.language); } catch {} }
       }
     } catch (err) {
       console.error('Failed to check dependencies:', err);
@@ -334,6 +337,7 @@ export default function App() {
 
   const handleSetLanguage = (lang) => {
     setLanguage(lang);
+    try { localStorage.setItem('xf-lang', lang); } catch {}
     window.api.saveSettings({ language: lang });
   };
 
