@@ -240,10 +240,11 @@ export default function App() {
 
   const loadThemes = useCallback(async () => {
     try {
-      const list = await window.api.getThemes();
+      // Resolve both before setting state so there's no intermediate render with
+      // the default theme (which caused a brief flash on launch).
+      const [list, active] = await Promise.all([window.api.getThemes(), window.api.getActiveTheme()]);
       setThemes(list);
-      const active = await window.api.getActiveTheme();
-      setActiveThemeId(active.activeTheme || 'cyber-glass');
+      setActiveThemeId(active.activeTheme || 'xtractforge-default');
       if (active.themeSettings) setThemeSettings(active.themeSettings);
     } catch (err) {
       console.error('Failed to load themes:', err);
