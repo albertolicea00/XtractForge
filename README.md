@@ -148,13 +148,31 @@ electron/
   main.js              Main process — IPC handlers, plugin dispatch, settings
   preload.js           Secure IPC bridge (contextBridge)
   plugin-manager.js    Plugin registry, URL routing, dependency checks, external loading
+  theme-manager.js     Theme registry + external theme loading
   plugins/             Built-in plugins (one self-contained .js file each)
+  themes/              Built-in themes (one .js file each)
 src/
-  App.jsx              React UI — Download, Queue, AI Discover, Plugins, Settings tabs
-  index.css            Dark theme
+  App.jsx              React UI — Download, Queue, Plugins, Themes, Settings tabs
+  lib/                 Pure helpers (format, theme, plugins, queue)
+  locales/             i18n strings, one file per language
+  index.css            Theme variables + base styles
+tests/                 Vitest suite (lib, plugins, managers)
 ```
 
 → Full IPC contracts, data flows, and plugin internals: **[AGENTS.md](AGENTS.md)**
+
+---
+
+## 🧪 Tests
+
+```bash
+pnpm test            # run the suite once
+pnpm test:watch      # re-run on every change
+```
+
+Fast Node-side tests (Vitest) cover the pure logic: helpers, every built-in plugin's
+routing/parsing/arg-building, and the plugin/theme managers. Run them before pushing.
+See **[CONTRIBUTING.md](CONTRIBUTING.md)** for details.
 
 ---
 
