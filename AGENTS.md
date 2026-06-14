@@ -19,6 +19,7 @@ XtractForge runs on Electron's two-process model:
 - Communicates exclusively via `window.api` (contextBridge)
 - Layout:
   - `App.jsx` — shell: owns state/handlers/effects, renders `Sidebar` + the active tab
+  - `components/ErrorBoundary.jsx` — wraps `App` in `main.jsx`; catches render errors so one broken view doesn't blank the app
   - `components/Sidebar.jsx`, `components/tabs/*Tab.jsx` — presentational; receive state + handlers as props
   - `lib/` — pure, framework-free helpers (`format`, `theme`, `plugins`, `queue`); unit-tested
   - `i18n.js` + `locales/<lang>.js` — translations (English fallback)
@@ -131,7 +132,9 @@ plugin's download UI declared by the plugin itself (no UI code crosses the bridg
 
 ### Plugin Loading Order
 
-1. Built-in plugins registered at module load time (ordered: spotdl → gallery-dl → lux → yt-dlp)
+1. Built-in plugins registered at module load time. Routing order (most specific
+   first, yt-dlp catch-all last): spotdl → gallery-dl → lux → ffmpeg → curl → yt-dlp.
+   Plugin-card display order is independent — driven by each plugin's `order` field.
 2. External plugins from `<userData>/plugins/` loaded in `initPlugins()` at window creation
 3. User-imported plugins via IPC `browse-plugin-file` → `loadPluginFile`
 
@@ -273,12 +276,25 @@ pnpm install      # Install deps
 pnpm dev          # Vite dev server + Electron (HMR)
 pnpm test         # Run the Vitest suite once
 pnpm test:watch   # Re-run tests on every change
+pnpm release:patch # Bump version + push tag → release workflow builds installers (also: minor|major)
 pnpm build        # Production React bundle → dist/
 pnpm package:mac  # Electron packager for macOS
 pnpm package:win  # Windows
 pnpm package:linux
 pnpm package:all
 ```
+
+### CI / Releases (GitHub Actions)
+
+> ⚠️ **Never push, tag, or cut a release unless the user explicitly asks.** Do not run
+> `git push`, `pnpm release:*`, `npm version`, `gh release`, or create tags on your own.
+> Commits stay local until the user says to push. A release is only triggered when the
+> user explicitly requests it.
+
+- `.github/workflows/ci.yml` — on PR / push to `main`: `pnpm install --frozen-lockfile --ignore-scripts`, then `pnpm test` + `pnpm build`.
+- `.github/workflows/release.yml` — on `push tag v*.*.*`: matrix (mac/win/linux) runs `electron-builder --<os> --publish always` (GitHub provider) → creates the Release and uploads dmg/exe/AppImage/deb.
+- Cut a release with `pnpm release:patch|minor|major` — bumps `package.json`, pushes the tag, and opens the generated GitHub Release (needs the `gh` CLI authenticated locally).
+- CI installs with `--ignore-scripts` (tests/Vite need no native postinstall; electron-builder fetches Electron itself). Local dev approves native builds via `pnpm-workspace.yaml` (`onlyBuiltDependencies`). Builds are currently **unsigned**.
 
 ---
 
@@ -300,12 +316,4 @@ pnpm package:all
 
 ---
 
-## Roadmap
-
-- Auto-download missing binaries (yt-dlp, ffmpeg) on first run
-- Plugin marketplace / registry (browse and install community plugins from a URL)
-- Theme marketplace / registry (browse and install community themes from a URL)
-- Batch URL input (newline-separated)
-- Download history persistence across restarts
-- Chapter selector for YouTube videos with chapters
-- Follow OS light/dark preference automatically
+#

@@ -34,7 +34,7 @@ Theme management is handled through a dedicated **Theme Selector** menu, separat
 ## Information Architecture
 - **Home**: Central command with a focus on quick URL entry and a Floating Action Button for immediate tasks.
 - **Queue**: Real-time monitoring hub with detailed progress metrics (ETA, speed, storage status).
-- **Plugins**: Modular management for extraction engines (yt-dlp, spotDL, gallery-dl, lux).
+- **Plugins**: Modular management for extraction engines (yt-dlp, spotDL, gallery-dl, lux, ffmpeg, curl) — card grid + per-plugin settings page.
 - **Themes**: A dedicated top-level or sidebar section for aesthetic customization.
 - **Settings**: System-level configuration (threads, performance, hooks, background behavior).
 
