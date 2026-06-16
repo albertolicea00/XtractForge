@@ -53,6 +53,16 @@ export function buildThemeCss(theme, settings = {}) {
     if (rgb) vars[key] = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${alpha.toFixed(3)})`;
   }
 
+  // App Transparency
+  const appTransparency = typeof settings.appTransparency === 'number' ? settings.appTransparency : 100;
+  if (appTransparency < 100) {
+    if (vars['--bg-deep']) {
+      const rgb = parseRgb(vars['--bg-deep']);
+      if (rgb) vars['--bg-deep'] = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${(appTransparency / 100).toFixed(3)})`;
+    }
+    vars['--gradient-dark'] = 'none';
+  }
+
   // Accent override: recolor primary/accent + gradients from one hex.
   const accent = (settings.accentOverride || '').trim();
   if (accent && hexToRgba(accent, 1)) {

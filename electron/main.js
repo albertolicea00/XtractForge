@@ -37,7 +37,7 @@ let config = {
   autoCheckUpdates: true,
   // Theming
   activeTheme: 'xtractforge-default',
-  themeSettings: { accentOverride: '#34d399', glassIntensity: 75, monoFont: true },
+  themeSettings: { accentOverride: '#34d399', glassIntensity: 75, monoFont: true, appTransparency: 100 },
   // Directory where user-installed external theme .js files are stored
   externalThemesDir: path.join(app.getPath('userData'), 'themes'),
   themeMode: 'auto',
@@ -205,7 +205,8 @@ function createWindow() {
       contextIsolation: true,
       nodeIntegration: false,
     },
-    backgroundColor: '#0c0c0e',
+    transparent: config.themeSettings?.appTransparency < 100,
+    backgroundColor: config.themeSettings?.appTransparency < 100 ? '#00000000' : '#0c0c0e',
   });
 
   if (process.env.NODE_ENV === 'development') {

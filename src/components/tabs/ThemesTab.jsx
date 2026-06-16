@@ -67,21 +67,45 @@ export default function ThemesTab({ t, themes, activeThemeId, handleSetTheme, th
           </div>
         </div>
 
-        <div className="glass-card">
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-            <h3 style={{ fontSize: '15px', fontWeight: 600 }}>Glass Intensity</h3>
-            <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--primary)' }}>{themeSettings.glassIntensity}%</span>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px' }}>
+          <div className="glass-card">
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+              <h3 style={{ fontSize: '15px', fontWeight: 600 }}>Glass Intensity</h3>
+              <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--primary)' }}>{themeSettings.glassIntensity}%</span>
+            </div>
+            <input
+              type="range"
+              min="0"
+              max="100"
+              value={themeSettings.glassIntensity}
+              onChange={(e) => handleThemeSetting({ glassIntensity: Number(e.target.value) })}
+              style={{ width: '100%', accentColor: 'var(--primary)', cursor: 'pointer' }}
+            />
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', fontWeight: 600, letterSpacing: '0.5px', color: 'var(--text-muted)', marginTop: '6px' }}>
+              <span>SOLID</span><span>FROSTED</span><span>TRANSLUCENT</span>
+            </div>
           </div>
-          <input
-            type="range"
-            min="0"
-            max="100"
-            value={themeSettings.glassIntensity}
-            onChange={(e) => handleThemeSetting({ glassIntensity: Number(e.target.value) })}
-            style={{ width: '100%', accentColor: 'var(--primary)', cursor: 'pointer' }}
-          />
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', fontWeight: 600, letterSpacing: '0.5px', color: 'var(--text-muted)', marginTop: '6px' }}>
-            <span>SOLID</span><span>FROSTED</span><span>TRANSLUCENT</span>
+
+          <div className="glass-card">
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+              <h3 style={{ fontSize: '15px', fontWeight: 600 }}>App Transparency</h3>
+              <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--primary)' }}>{themeSettings.appTransparency ?? 100}%</span>
+            </div>
+            <input
+              type="range"
+              min="0"
+              max="100"
+              value={themeSettings.appTransparency ?? 100}
+              onChange={(e) => handleThemeSetting({ appTransparency: Number(e.target.value) })}
+              style={{ width: '100%', accentColor: 'var(--primary)', cursor: 'pointer' }}
+            />
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', fontWeight: 600, letterSpacing: '0.5px', color: 'var(--text-muted)', marginTop: '6px' }}>
+              <span>CLEAR</span><span>TRANSLUCENT</span><span>OPAQUE</span>
+            </div>
+            <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '12px', display: 'flex', gap: '6px', alignItems: 'flex-start' }}>
+              <AlertTriangle size={12} style={{ flexShrink: 0, marginTop: '2px' }} />
+              Requires restart. OS may hide window shadows.
+            </div>
           </div>
         </div>
       </div>
