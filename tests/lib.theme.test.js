@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { hexToRgba, parseRgb, buildThemeCss, MONO_STACK } from '../src/lib/theme';
+import { hexToRgba, parseRgb, buildThemeCss } from '../src/lib/theme';
 
 describe('hexToRgba', () => {
   it('expands 3- and 6-digit hex', () => {
@@ -44,14 +44,5 @@ describe('buildThemeCss', () => {
     expect(sheer).toContain('--bg-card: rgba(10, 10, 10, 0.400);');
   });
 
-  it('monoFont and explicit fontFamily set --font-sans', () => {
-    expect(buildThemeCss(theme, { monoFont: true })).toContain(`--font-sans: ${MONO_STACK};`);
-    expect(buildThemeCss(theme, { fontFamily: 'Georgia, serif' })).toContain('--font-sans: Georgia, serif;');
-  });
 
-  it('font weight and letter spacing cascade from body', () => {
-    const css = buildThemeCss(theme, { fontWeight: '700', letterSpacing: 5 });
-    expect(css).toContain('font-weight: 700;');
-    expect(css).toContain('letter-spacing: 0.05em;');
-  });
 });

@@ -1,22 +1,6 @@
 // Theme application — builds a :root CSS block from a theme + user settings and
 // injects it. A theme is { variables: { '--x': value } } + optional raw `css`.
 
-export const MONO_STACK = "'SFMono-Regular', 'JetBrains Mono', 'Fira Code', Consolas, monospace";
-
-// Font-family presets for the Typography picker. value '' = use the theme's own font.
-export const FONT_PRESETS = [
-  { label: 'Theme default', value: '' },
-  { label: 'System Sans', value: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" },
-  { label: 'Outfit', value: "'Outfit', sans-serif" },
-  { label: 'Monospace', value: MONO_STACK },
-  { label: 'Serif', value: "Georgia, 'Times New Roman', serif" },
-];
-
-// Body text weight options (headings keep their own inline weight).
-export const FONT_WEIGHTS = [
-  { label: 'Normal', value: 'normal' },
-  { label: 'Bold', value: '700' },
-];
 
 export const ACCENT_PRESETS = [
   '#adc6ff', '#60a5fa', '#2dd4bf', '#34d399', '#a3e635',
@@ -81,24 +65,9 @@ export function buildThemeCss(theme, settings = {}) {
     vars['--gradient-hover'] = `linear-gradient(135deg, ${accent} 0%, ${accent} 100%)`;
   }
 
-  // Font family: explicit user pick wins over the legacy mono toggle, which wins
-  // over the theme's own --font-sans (left untouched when neither is set).
-  const fontFamily = (settings.fontFamily || '').trim();
-  if (fontFamily) vars['--font-sans'] = fontFamily;
-  else if (settings.monoFont) vars['--font-sans'] = MONO_STACK;
-
   const body = Object.entries(vars).map(([k, v]) => `  ${k}: ${v};`).join('\n');
 
-  // Text tweaks that cascade from <body> (inline-weighted elements like headings
-  // keep their own weight; plain body copy inherits these).
-  const textRules = [];
-  const fw = settings.fontWeight;
-  if (fw && fw !== 'normal') textRules.push(`font-weight: ${fw};`);
-  const ls = settings.letterSpacing;
-  if (typeof ls === 'number' && ls !== 0) textRules.push(`letter-spacing: ${ls / 100}em;`);
-  const bodyCss = textRules.length ? `\nbody { ${textRules.join(' ')} }` : '';
-
-  return `:root {\n${body}\n}\n${theme.css || ''}${bodyCss}`;
+  return `:root {\n${body}\n}\n${theme.css || ''}`;
 }
 
 export function applyTheme(theme, settings) {

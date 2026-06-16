@@ -605,6 +605,8 @@ export default function App() {
             handleImportTheme={handleImportTheme}
             themeSettings={themeSettings}
             handleThemeSetting={handleThemeSetting}
+            settings={settings}
+            updateSetting={updateSetting}
           />
         )}
 
