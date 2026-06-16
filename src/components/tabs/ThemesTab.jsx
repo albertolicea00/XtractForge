@@ -1,8 +1,8 @@
 import React from 'react';
 import { Palette, FolderOpen, UploadCloud, CheckCircle2, AlertTriangle, Check, XCircle, Globe } from 'lucide-react';
-import { ACCENT_PRESETS, FONT_PRESETS, FONT_WEIGHTS } from '../../lib/theme';
+import { ACCENT_PRESETS } from '../../lib/theme';
 
-export default function ThemesTab({ t, themes, activeThemeId, handleSetTheme, themeImportResult, handleImportTheme, themeSettings, handleThemeSetting }) {
+export default function ThemesTab({ t, themes, activeThemeId, handleSetTheme, themeImportResult, handleImportTheme, themeSettings, handleThemeSetting, settings, updateSetting }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       {/* Header — matches the Plugins tab */}
@@ -33,10 +33,61 @@ export default function ThemesTab({ t, themes, activeThemeId, handleSetTheme, th
             {!themeImportResult.success && <p style={{ fontSize: '12px', marginTop: '2px' }}>{themeImportResult.error}</p>}
           </div>
         </div>
-      )}
+      )}      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px', marginBottom: '32px' }}>
+        <div className="glass-card">
+          <h3 style={{ fontSize: '15px', fontWeight: 600, marginBottom: '16px' }}>Appearance & Window</h3>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div className="toggle-group">
+              <div className="toggle-row">
+                <div className="toggle-details">
+                  <span className="toggle-title">Native Window Titlebar</span>
+                  <span className="toggle-desc">Use standard OS frame (requires restart).</span>
+                </div>
+                <label className="switch"><input type="checkbox" checked={!!settings?.useNativeTitlebar} onChange={(e) => updateSetting({ useNativeTitlebar: e.target.checked })} /><span className="slider"></span></label>
+              </div>
+            </div>
+
+            <div className="input-group" style={{ marginBottom: 0 }}>
+              <label>Zoom</label>
+              <select
+                value={themeSettings.fontScale ?? 100}
+                onChange={(e) => handleThemeSetting({ fontScale: Number(e.target.value) })}
+                style={{ width: '100%', padding: '10px 12px', background: 'var(--bg-input)', color: 'var(--text-primary)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', outline: 'none', fontFamily: 'var(--font-sans)', fontSize: '13px', cursor: 'pointer' }}
+              >
+                <option value="80">80%</option>
+                <option value="90">90%</option>
+                <option value="100">100% (Default)</option>
+                <option value="115">115%</option>
+                <option value="120">120%</option>
+                <option value="135">135%</option>
+                <option value="150">150%</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div className="glass-card">
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+            <h3 style={{ fontSize: '15px', fontWeight: 600 }}>Glass Intensity</h3>
+            <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--primary)' }}>{themeSettings.glassIntensity}%</span>
+          </div>
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value={themeSettings.glassIntensity}
+            onChange={(e) => handleThemeSetting({ glassIntensity: Number(e.target.value) })}
+            style={{ width: '100%', accentColor: 'var(--primary)', cursor: 'pointer' }}
+          />
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', fontWeight: 600, letterSpacing: '0.5px', color: 'var(--text-muted)', marginTop: '6px' }}>
+            <span>SOLID</span><span>FROSTED</span><span>TRANSLUCENT</span>
+          </div>
+        </div>
+      </div>
 
       {/* Visual Modes */}
-      <div className="glass-card">
+      <div className="glass-card" style={{ marginBottom: '32px' }}>
         <h3 style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', margin: '0 0 12px' }}>Visual Modes</h3>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(168px, 1fr))', gap: '12px' }}>
           {themes.map(theme => {
@@ -88,13 +139,19 @@ export default function ThemesTab({ t, themes, activeThemeId, handleSetTheme, th
         </div>
       </div>
 
-      {/* Customization row */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px' }}>
         <div className="glass-card">
           <h3 style={{ fontSize: '15px', fontWeight: 600, marginBottom: '4px' }}>Custom Accent Color</h3>
           <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '16px' }}>
             Override the primary brand color across the entire interface.
           </p>
+          <div className="toggle-row" style={{ marginBottom: '16px', paddingBottom: '16px', borderBottom: '1px solid var(--border-color)' }}>
+            <div className="toggle-details">
+              <span className="toggle-title">System Accent Color</span>
+              <span className="toggle-desc">Use OS accent color for primary elements.</span>
+            </div>
+            <label className="switch"><input type="checkbox" checked={settings?.useSystemAccentColor !== false} onChange={(e) => updateSetting({ useSystemAccentColor: e.target.checked })} /><span className="slider"></span></label>
+          </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'var(--bg-input)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '10px 14px' }}>
               <input
@@ -132,107 +189,6 @@ export default function ThemesTab({ t, themes, activeThemeId, handleSetTheme, th
             >
               <XCircle size={18} />
             </button>
-          </div>
-        </div>
-
-        <div className="glass-card">
-          <h3 style={{ fontSize: '15px', fontWeight: 600, marginBottom: '4px' }}>Typography</h3>
-          <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '16px' }}>
-            Font, weight and spacing for body text. "Theme default" keeps each theme's own font.
-          </p>
-          <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', alignItems: 'flex-start' }}>
-            <div style={{ flex: '1 1 220px', minWidth: '180px' }}>
-              <label style={{ display: 'block', fontSize: '11px', fontWeight: 600, letterSpacing: '0.5px', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '6px' }}>Font Family</label>
-              <select
-                value={themeSettings.fontFamily || ''}
-                onChange={(e) => handleThemeSetting({ fontFamily: e.target.value })}
-                style={{ width: '100%', padding: '10px 12px', background: 'var(--bg-input)', color: 'var(--text-primary)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', outline: 'none', fontFamily: 'var(--font-sans)', fontSize: '13px', cursor: 'pointer' }}
-              >
-                {FONT_PRESETS.map(f => (
-                  <option key={f.label} value={f.value} style={{ fontFamily: f.value || 'inherit' }}>{f.label}</option>
-                ))}
-              </select>
-            </div>
-            <div style={{ flex: '1 1 220px', minWidth: '180px' }}>
-              <label style={{ display: 'block', fontSize: '11px', fontWeight: 600, letterSpacing: '0.5px', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '6px' }}>Font Weight</label>
-              <div style={{ display: 'flex', gap: '6px' }}>
-                {FONT_WEIGHTS.map(w => {
-                  const active = (themeSettings.fontWeight || 'normal') === w.value;
-                  return (
-                    <button
-                      key={w.value}
-                      onClick={() => handleThemeSetting({ fontWeight: w.value })}
-                      style={{
-                        flex: 1, padding: '9px 4px', borderRadius: 'var(--radius-md)', cursor: 'pointer',
-                        fontFamily: 'var(--font-sans)', fontSize: '12px', fontWeight: w.value === 'normal' ? 400 : Number(w.value),
-                        background: active ? 'var(--primary)' : 'var(--bg-input)',
-                        color: active ? 'var(--bg-dark)' : 'var(--text-secondary)',
-                        border: `1px solid ${active ? 'var(--primary)' : 'var(--border-color)'}`,
-                      }}
-                    >
-                      {w.label}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-          <div style={{ marginTop: '16px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
-              <label style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.5px', textTransform: 'uppercase', color: 'var(--text-muted)' }}>Letter Spacing</label>
-              <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--primary)' }}>{(themeSettings.letterSpacing ?? 0) > 0 ? '+' : ''}{themeSettings.letterSpacing ?? 0}</span>
-            </div>
-            <input
-              type="range"
-              min="-5"
-              max="20"
-              step="1"
-              value={themeSettings.letterSpacing ?? 0}
-              onChange={(e) => handleThemeSetting({ letterSpacing: Number(e.target.value) })}
-              style={{ width: '100%', accentColor: 'var(--primary)', cursor: 'pointer' }}
-            />
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', fontWeight: 600, letterSpacing: '0.5px', color: 'var(--text-muted)', marginTop: '6px' }}>
-              <span>TIGHT</span><span>NORMAL</span><span>WIDE</span>
-            </div>
-          </div>
-        </div>
-
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px' }}>
-          <div className="glass-card">
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-              <h3 style={{ fontSize: '15px', fontWeight: 600 }}>Glass Intensity</h3>
-              <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--primary)' }}>{themeSettings.glassIntensity}%</span>
-            </div>
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={themeSettings.glassIntensity}
-              onChange={(e) => handleThemeSetting({ glassIntensity: Number(e.target.value) })}
-              style={{ width: '100%', accentColor: 'var(--primary)', cursor: 'pointer' }}
-            />
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', fontWeight: 600, letterSpacing: '0.5px', color: 'var(--text-muted)', marginTop: '6px' }}>
-              <span>SOLID</span><span>FROSTED</span><span>TRANSLUCENT</span>
-            </div>
-          </div>
-
-          <div className="glass-card">
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-              <h3 style={{ fontSize: '15px', fontWeight: 600 }}>Zoom</h3>
-              <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--primary)' }}>{themeSettings.fontScale ?? 100}%</span>
-            </div>
-            <input
-              type="range"
-              min="80"
-              max="140"
-              step="5"
-              value={themeSettings.fontScale ?? 100}
-              onChange={(e) => handleThemeSetting({ fontScale: Number(e.target.value) })}
-              style={{ width: '100%', accentColor: 'var(--primary)', cursor: 'pointer' }}
-            />
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', fontWeight: 600, letterSpacing: '0.5px', color: 'var(--text-muted)', marginTop: '6px' }}>
-              <span>SMALL</span><span>DEFAULT</span><span>LARGE</span>
-            </div>
           </div>
         </div>
       </div>
