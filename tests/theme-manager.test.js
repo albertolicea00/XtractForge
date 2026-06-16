@@ -4,20 +4,22 @@ const tm = require('../electron/theme-manager');
 describe('theme-manager', () => {
   it('registers built-in themes with valid shape', () => {
     const themes = tm.getAllThemes();
-    expect(themes.length).toBeGreaterThanOrEqual(7);
+    expect(themes.length).toBeGreaterThanOrEqual(8);
     for (const t of themes) {
       expect(typeof t.id).toBe('string');
       expect(typeof t.name).toBe('string');
-      expect(t.variables && t.variables['--primary']).toBeTruthy();
+      const hasFlatPrimary = t.variables && t.variables['--primary'];
+      const hasNestedPrimary = t.variables && t.variables.dark && t.variables.dark['--primary'];
+      expect(hasFlatPrimary || hasNestedPrimary).toBeTruthy();
     }
   });
 
-  it('ships XtractForge Default as the first theme', () => {
-    expect(tm.getAllThemes()[0].id).toBe('xtractforge-default');
+  it('ships os-windows-11-dark as the first theme', () => {
+    expect(tm.getAllThemes()[0].id).toBe('os-windows-11-dark');
   });
 
   it('looks up by id', () => {
-    expect(tm.getTheme('dracula').id).toBe('dracula');
+    expect(tm.getTheme('os-macos-dark').id).toBe('os-macos-dark');
     expect(tm.getTheme('nope')).toBeNull();
   });
 
