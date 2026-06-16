@@ -12,6 +12,7 @@ contextBridge.exposeInMainWorld('api', {
   getDefaultDownloadsFolder: () => ipcRenderer.invoke('get-default-downloads-folder'),
   openFolder: (p) => ipcRenderer.invoke('open-folder', p),
   openExternal: (url) => ipcRenderer.invoke('open-external', url),
+  showContextMenu: () => ipcRenderer.send('show-context-menu'),
 
   // Media info & download
   getVideoInfo: (url, pluginId) => ipcRenderer.invoke('get-video-info', url, pluginId),
@@ -62,5 +63,10 @@ contextBridge.exposeInMainWorld('api', {
     const sub = (event, data) => callback(data);
     ipcRenderer.on('download-log', sub);
     return () => ipcRenderer.removeListener('download-log', sub);
+  },
+  onOsThemeChanged: (callback) => {
+    const sub = (event, data) => callback(data);
+    ipcRenderer.on('os-theme-changed', sub);
+    return () => ipcRenderer.removeListener('os-theme-changed', sub);
   },
 });

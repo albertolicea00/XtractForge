@@ -51,6 +51,33 @@ export default function SettingsTab({
               </select>
               <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{t('settings.languageDesc')}</span>
             </div>
+
+            <h3 style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginTop: '8px' }}>Appearance & Window</h3>
+            <div className="input-group" style={{ marginBottom: 0 }}>
+              <label>Color Mode</label>
+              <select value={settings.themeMode || 'auto'} onChange={(e) => updateSetting({ themeMode: e.target.value })} style={{ padding: '12px', background: 'var(--bg-input)', color: 'var(--text-primary)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', outline: 'none', fontFamily: 'var(--font-sans)', fontSize: '13px' }}>
+                <option value="auto">Auto (Follow OS)</option>
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+              </select>
+            </div>
+
+            <div className="toggle-group">
+              <div className="toggle-row">
+                <div className="toggle-details">
+                  <span className="toggle-title">System Accent Color</span>
+                  <span className="toggle-desc">Use OS accent color for primary elements.</span>
+                </div>
+                <label className="switch"><input type="checkbox" checked={settings.useSystemAccentColor !== false} onChange={(e) => updateSetting({ useSystemAccentColor: e.target.checked })} /><span className="slider"></span></label>
+              </div>
+              <div className="toggle-row">
+                <div className="toggle-details">
+                  <span className="toggle-title">Native Window Titlebar</span>
+                  <span className="toggle-desc">Use standard OS frame (requires restart).</span>
+                </div>
+                <label className="switch"><input type="checkbox" checked={!!settings.useNativeTitlebar} onChange={(e) => updateSetting({ useNativeTitlebar: e.target.checked })} /><span className="slider"></span></label>
+              </div>
+            </div>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>

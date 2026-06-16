@@ -55,6 +55,11 @@ export default function App() {
     sponsorBlock: false,
     stageToTemp: true,
     organize: 'none',
+    themeMode: 'auto',
+    useNativeTitlebar: false,
+    useSystemAccentColor: true,
+    osDarkMode: false,
+    osAccentColor: null,
   });
 
   // Plugin-specific configs: { [pluginId]: { ...keys } }
@@ -110,6 +115,11 @@ export default function App() {
           sponsorBlock: !!saved.sponsorBlock,
           stageToTemp: saved.stageToTemp !== false,
           organize: saved.organize || 'none',
+          themeMode: saved.themeMode || 'auto',
+          useNativeTitlebar: !!saved.useNativeTitlebar,
+          useSystemAccentColor: saved.useSystemAccentColor !== false,
+          osDarkMode: !!saved.osDarkMode,
+          osAccentColor: saved.osAccentColor || null,
         }));
         setDisabledPlugins(saved.disabledPlugins || []);
         if (typeof saved.autoCheckUpdates === 'boolean') setAutoCheckUpdates(saved.autoCheckUpdates);
@@ -198,7 +208,18 @@ export default function App() {
       });
     });
 
-    return () => { unsub1(); unsub2(); unsub3(); unsub4(); };
+    let unsub5 = null;
+    if (window.api.onOsThemeChanged) {
+      unsub5 = window.api.onOsThemeChanged((data) => {
+        setSettings(prev => ({
+          ...prev,
+          osDarkMode: data.osDarkMode,
+          osAccentColor: data.osAccentColor
+        }));
+      });
+    }
+
+    return () => { unsub1(); unsub2(); unsub3(); unsub4(); if (unsub5) unsub5(); };
   }, [refreshPlugins, loadThemes]);
 
   // Refresh free disk space when viewing the queue
@@ -214,8 +235,38 @@ export default function App() {
   // Apply the active theme + user settings whenever any of them change
   useEffect(() => {
     const theme = themes.find(t => t.id === activeThemeId);
-    if (theme) applyTheme(theme, themeSettings);
-  }, [themes, activeThemeId, themeSettings]);
+    if (theme) {
+      const mergedSettings = {
+        ...themeSettings,
+        themeMode: settings.themeMode,
+        osDarkMode: settings.osDarkMode
+      };
+      if (settings.useSystemAccentColor && settings.osAccentColor) {
+        mergedSettings.accentOverride = settings.osAccentColor;
+      }
+      applyTheme(theme, mergedSettings);
+    }
+  }, [themes, activeThemeId, themeSettings, settings.themeMode, settings.osDarkMode, settings.useSystemAccentColor, settings.osAccentColor]);
+
+  // Handle native titlebar body class
+  useEffect(() => {
+    if (settings.useNativeTitlebar) {
+      document.body.classList.add('native-titlebar');
+    } else {
+      document.body.classList.remove('native-titlebar');
+    }
+  }, [settings.useNativeTitlebar]);
+
+  // Handle context menu
+  useEffect(() => {
+    const handleContextMenu = (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) {
+        if (window.api.showContextMenu) window.api.showContextMenu();
+      }
+    };
+    window.addEventListener('contextmenu', handleContextMenu);
+    return () => window.removeEventListener('contextmenu', handleContextMenu);
+  }, []);
 
   // Text size = real browser zoom (reflows the whole window, no empty gaps).
   useEffect(() => {

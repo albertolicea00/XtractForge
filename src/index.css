@@ -103,6 +103,10 @@ body {
   pointer-events: auto;
 }
 
+body.native-titlebar .titlebar-drag {
+  display: none;
+}
+
 /* Keep clickable elements interactive even if they sit near the drag strip */
 button, a, input, select, textarea, .nav-item, .switch {
   -webkit-app-region: no-drag;
@@ -147,6 +151,10 @@ button, a, input, select, textarea, .nav-item, .switch {
   flex-shrink: 0;
   backdrop-filter: blur(20px);
   padding-top: 48px;
+}
+
+body.native-titlebar .sidebar {
+  padding-top: 24px;
 }
 
 .brand {

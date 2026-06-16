@@ -3,18 +3,14 @@ const fs = require('fs');
 
 // Built-in themes registered at module load time.
 const BUILTIN_THEMES = [
-  require('./themes/xtractforge-default'),
-  require('./themes/cyber-glass'),
-  require('./themes/alexandria'),
-  require('./themes/matrix'),
-  require('./themes/dracula'),
-  require('./themes/solarized-light'),
-  require('./themes/gruvbox-dark'),
-  require('./themes/tokyo-night'),
-  require('./themes/catppuccin-mocha'),
-  require('./themes/monokai'),
-  require('./themes/catppuccin-latte'),
-  require('./themes/github-light'),
+  require('./themes/os-windows-11-dark'),
+  require('./themes/os-windows-11-light'),
+  require('./themes/os-windows-10-dark'),
+  require('./themes/os-windows-10-light'),
+  require('./themes/os-macos-dark'),
+  require('./themes/os-macos-light'),
+  require('./themes/os-ubuntu-dark'),
+  require('./themes/os-ubuntu-light'),
 ];
 
 // All loaded themes (builtin + external) keyed by theme.id, insertion-ordered.

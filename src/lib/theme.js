@@ -53,7 +53,13 @@ export function parseRgb(str) {
 }
 
 export function buildThemeCss(theme, settings = {}) {
-  const vars = { ...(theme.variables || {}) };
+  let vars = { ...(theme.variables || {}) };
+  
+  const mode = settings.themeMode === 'light' || (settings.themeMode === 'auto' && settings.osDarkMode === false) ? 'light' : 'dark';
+  if (vars[mode]) {
+    vars = { ...vars[mode] };
+  }
+
 
   // Glass intensity (0–100): higher = more translucent glass surfaces.
   const intensity = typeof settings.glassIntensity === 'number' ? settings.glassIntensity : 75;
