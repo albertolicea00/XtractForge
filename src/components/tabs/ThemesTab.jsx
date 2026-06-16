@@ -33,7 +33,9 @@ export default function ThemesTab({ t, themes, activeThemeId, handleSetTheme, th
             {!themeImportResult.success && <p style={{ fontSize: '12px', marginTop: '2px' }}>{themeImportResult.error}</p>}
           </div>
         </div>
-      )}      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px', marginBottom: '32px' }}>
+      )}
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         <div className="glass-card">
           <h3 style={{ fontSize: '15px', fontWeight: 600, marginBottom: '16px' }}>Appearance & Window</h3>
           
@@ -67,7 +69,7 @@ export default function ThemesTab({ t, themes, activeThemeId, handleSetTheme, th
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px', alignItems: 'start' }}>
           <div className="glass-card">
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
               <h3 style={{ fontSize: '15px', fontWeight: 600 }}>Glass Intensity</h3>
@@ -102,16 +104,16 @@ export default function ThemesTab({ t, themes, activeThemeId, handleSetTheme, th
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', fontWeight: 600, letterSpacing: '0.5px', color: 'var(--text-muted)', marginTop: '6px' }}>
               <span>CLEAR</span><span>TRANSLUCENT</span><span>OPAQUE</span>
             </div>
-            <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '12px', display: 'flex', gap: '6px', alignItems: 'flex-start' }}>
+            {/* <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '12px', display: 'flex', gap: '6px', alignItems: 'flex-start' }}>
               <AlertTriangle size={12} style={{ flexShrink: 0, marginTop: '2px' }} />
               Requires restart. OS may hide window shadows.
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
 
       {/* Visual Modes */}
-      <div className="glass-card" style={{ marginBottom: '32px' }}>
+      <div className="glass-card">
         <h3 style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', margin: '0 0 12px' }}>Visual Modes</h3>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(168px, 1fr))', gap: '12px' }}>
           {themes.map(theme => {
@@ -163,8 +165,7 @@ export default function ThemesTab({ t, themes, activeThemeId, handleSetTheme, th
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px' }}>
-        <div className="glass-card">
+      <div className="glass-card">
           <h3 style={{ fontSize: '15px', fontWeight: 600, marginBottom: '4px' }}>Custom Accent Color</h3>
           <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '16px' }}>
             Override the primary brand color across the entire interface.
@@ -215,9 +216,8 @@ export default function ThemesTab({ t, themes, activeThemeId, handleSetTheme, th
             </button>
           </div>
         </div>
-      </div>
 
-      <div style={{ padding: '16px', background: 'rgba(255,255,255,0.02)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
+        <div style={{ padding: '16px', background: 'rgba(255,255,255,0.02)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
         <div>
           <h4 style={{ fontSize: '13px', fontWeight: 600, marginBottom: '4px' }}>Building a theme</h4>
           <p style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
